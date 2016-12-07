@@ -12,8 +12,8 @@ public:
     explicit ControlChannel(const QUrl &url, QObject *parent = Q_NULLPTR);
 
 signals:
-    void connected();
-    void disconnected();
+    void openBrowser();
+    void closeBrowser();
 
 private Q_SLOTS:
     void onConnected();

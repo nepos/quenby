@@ -1,3 +1,5 @@
+#include <QJsonDocument>
+#include <QJsonObject>
 #include "controlchannel.h"
 
 ControlChannel::ControlChannel(const QUrl &url, QObject *parent) :
@@ -18,13 +20,18 @@ void ControlChannel::onDisconnected()
 void ControlChannel::onConnected()
 {
     qWarning() << "WebSocket connected";
-
-    webSocket.sendTextMessage(QStringLiteral("Hello, world!"));
 }
 
 void ControlChannel::onTextMessageReceived(QString message)
 {
-    qWarning() << "Message received:" << message;
+    QJsonDocument json = QJsonDocument::fromJson(message.toUtf8());
+    QJsonObject obj = json.object();
+    QString command = obj["command"].toString();
+
+    if (command == "openBrowser")
+        emit openBrowser();
+
+    qWarning() << "Message received:" << command;
 }
 
 void ControlChannel::onTimerTimeout()
