@@ -9,6 +9,7 @@ MainWindow::MainWindow(QUrl mainViewUrl, QUrl controlChannelUrl, QWidget *parent
 {
     layout = new QVBoxLayout;
     layout->setSpacing(0);
+    layout->setMargin(0);
 
     window = new QWidget;
     window->setLayout(layout);
