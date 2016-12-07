@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui webenginewidgets network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,8 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    webpage.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    webpage.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    spinner.qml

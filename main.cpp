@@ -10,5 +10,9 @@ int main(int argc, char *argv[])
     w.setWindowState(Qt::WindowFullScreen);
     w.showFullScreen();
 
+    w.foo();
+    w.foo();
+    w.foo();
+
     return a.exec();
 }
