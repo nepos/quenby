@@ -29,7 +29,10 @@ void ControlChannel::onTextMessageReceived(QString message)
     QString command = obj["command"].toString();
 
     if (command == "openBrowser")
-        emit openBrowser();
+        emit openBrowser(obj["url"].toString());
+
+    if (command == "closeBrowser")
+        emit closeBrowser();
 
     qWarning() << "Message received:" << command;
 }

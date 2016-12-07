@@ -12,7 +12,7 @@ public:
     explicit ControlChannel(const QUrl &url, QObject *parent = Q_NULLPTR);
 
 signals:
-    void openBrowser();
+    void openBrowser(const QString &url);
     void closeBrowser();
 
 private Q_SLOTS:
