@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webenginewidgets network
+QT += core gui webenginewidgets network websockets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    webpage.cpp
+    webpage.cpp \
+    controlchannel.cpp
 
 HEADERS  += mainwindow.h \
-    webpage.h
+    webpage.h \
+    controlchannel.h
 
 FORMS    += mainwindow.ui
 
