@@ -37,10 +37,10 @@ int main(int argc, char *argv[])
     QCommandLineOption fullscreenOption(QStringList() << "f" << "fullscreen", "Fullscreen display [default: off].");
     parser.addOption(fullscreenOption);
 
-    QCommandLineOption defaultViewUrlOption(QStringList() << "u" << "url", "Default view URL", NULL, QStringLiteral("http://acid3.acidtests.org"));
+    QCommandLineOption defaultViewUrlOption(QStringList() << "u" << "url", "Default view URL", NULL, QStringLiteral("http://localhost:3000/"));
     parser.addOption(defaultViewUrlOption);
 
-    QCommandLineOption commandUrlOption(QStringList() << "c" << "command", "Command channel URL", NULL, QStringLiteral("ws://localhost:3000/ws/"));
+    QCommandLineOption commandUrlOption(QStringList() << "c" << "command", "Command channel URL", NULL, QStringLiteral("ws://localhost:3000/channels/browser/"));
     parser.addOption(commandUrlOption);
 
     parser.process(a);
