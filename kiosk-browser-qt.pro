@@ -8,7 +8,7 @@ QT += core gui webenginewidgets network websockets webchannel
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = browser
+TARGET = kiosk-browser-qt
 TEMPLATE = app
 
 SOURCES += main.cpp\
