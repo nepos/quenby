@@ -2,10 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QList>
 #include <QVBoxLayout>
 #include <QWebEngineView>
+#include <QWebChannel>
+#include <QtWebSockets/QWebSocketServer>
 
-#include "controlchannel.h"
+#include "serverinterface.h"
+#include "webchanneltransport.h"
 #include "webpage.h"
 
 class MainWindow : public QMainWindow
@@ -13,25 +17,28 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QUrl mainViewUrl, QUrl controlChannelUrl, QWidget *parent = 0);
+    explicit MainWindow(QUrl mainViewUrl, int controlPort, QWidget *parent = 0);
     ~MainWindow();
 
-    void addWebView(const QUrl url);
-
 private Q_SLOTS:
-    void onOpenBrowser(const QString &url);
-    void onCloseBrowser();
+    void onNewServerConnection();
+    void onTransportDisconnected();
 
 private:
     QWidget *window;
     QVBoxLayout *layout;
-    ControlChannel *cc;
 
     QWebEngineView *mainView;
     QWebEngineView *browserView;
 
     WebPage *mainWebPage;
     WebPage *browserWebPage;
+
+    QWebSocketServer *socketServer;
+    QList<WebChannelTransport *> socketClients;
+    QWebChannel channel;
+
+    ServerInterface interface;
 };
 
 #endif // MAINWINDOW_H

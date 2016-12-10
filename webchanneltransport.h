@@ -17,32 +17,33 @@
   along with this software; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#ifndef CONTROLCHANNEL_H
-#define CONTROLCHANNEL_H
+#ifndef WEBCHANNELTRANSPORT_H
+#define WEBCHANNELTRANSPORT_H
 
 #include <QObject>
-#include <QTimer>
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <QtWebSockets/QWebSocket>
+#include <QtWebChannel/QWebChannelAbstractTransport>
 
-class ControlChannel : public QObject
+class WebChannelTransport : public QWebChannelAbstractTransport
 {
     Q_OBJECT
+
 public:
-    explicit ControlChannel(const QUrl &url, QObject *parent = Q_NULLPTR);
+    explicit WebChannelTransport(QWebSocket *socket);
+    ~WebChannelTransport();
+
+    void sendMessage(const QJsonObject &json) Q_DECL_OVERRIDE;
 
 signals:
-    void openBrowser(const QString &url);
-    void closeBrowser();
+    void disconnected();
 
-private Q_SLOTS:
-    void onConnected();
-    void onDisconnected();
-    void onTextMessageReceived(QString message);
-    void onTimerTimeout();
+private slots:
+    void onTextMessageReceived(const QString &message);
 
 private:
-    QWebSocket webSocket;
-    QUrl url;
+    QWebSocket *socket;
 };
 
-#endif // CONTROLCHANNEL_H
+#endif // WEBCHANNELTRANSPORT_H

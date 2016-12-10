@@ -4,24 +4,24 @@
 #
 #-------------------------------------------------
 
-QT += core gui webenginewidgets network websockets
+QT += core gui webenginewidgets network websockets webchannel
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = browser
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     webpage.cpp \
-    controlchannel.cpp
+    webchanneltransport.cpp \
+    serverinterface.cpp
 
 HEADERS  += mainwindow.h \
     webpage.h \
-    controlchannel.h
+    webchanneltransport.h \
+    serverinterface.h
 
 FORMS    += mainwindow.ui
 
-DISTFILES += \
-    spinner.qml
+DISTFILES +=

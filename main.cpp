@@ -40,13 +40,13 @@ int main(int argc, char *argv[])
     QCommandLineOption defaultViewUrlOption(QStringList() << "u" << "url", "Default view URL", NULL, QStringLiteral("http://localhost:3000/"));
     parser.addOption(defaultViewUrlOption);
 
-    QCommandLineOption commandUrlOption(QStringList() << "c" << "command", "Command channel URL", NULL, QStringLiteral("ws://localhost:3000/channels/browser/"));
-    parser.addOption(commandUrlOption);
+    QCommandLineOption controlServerPortOption(QStringList() << "p" << "port", "Control server port", NULL, "3001");
+    parser.addOption(controlServerPortOption);
 
     parser.process(a);
 
     MainWindow w(parser.value(defaultViewUrlOption),
-                 parser.value(commandUrlOption));
+                 parser.value(controlServerPortOption).toInt());
 
     if (parser.isSet(fullscreenOption)) {
         w.setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);

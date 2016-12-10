@@ -17,17 +17,31 @@
   along with this software; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#ifndef WEBPAGE_H
-#define WEBPAGE_H
+#ifndef SERVERINTERFACE_H
+#define SERVERINTERFACE_H
 
-#include <QWebEnginePage>
+#include <QObject>
 
-class WebPage : public QWebEnginePage
+class ServerInterface : public QObject
 {
     Q_OBJECT
 
 public:
-    WebPage(QWebEngineProfile *profile, QObject *parent = Q_NULLPTR);
+    explicit ServerInterface(QObject *parent = 0);
+
+    Q_PROPERTY(QString  browserURL      MEMBER browserURL       NOTIFY onBrowserURLChanged)
+    Q_PROPERTY(QString  browserTitle    MEMBER browserTitle     NOTIFY onBrowserTitleChanged)
+    Q_PROPERTY(bool     browserVisible  MEMBER browserVisible   NOTIFY onBrowserVisibleChanged)
+
+signals:
+    void onBrowserURLChanged(const QString &value);
+    void onBrowserTitleChanged(const QString &value);
+    void onBrowserVisibleChanged(bool value);
+
+private:
+    QString browserURL;
+    QString browserTitle;
+    bool    browserVisible;
 };
 
-#endif
+#endif // SERVERINTERFACE_H
