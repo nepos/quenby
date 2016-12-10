@@ -29,19 +29,22 @@ class ServerInterface : public QObject
 public:
     explicit ServerInterface(QObject *parent = 0);
 
-    Q_PROPERTY(QString  browserURL      MEMBER browserURL       NOTIFY onBrowserURLChanged)
-    Q_PROPERTY(QString  browserTitle    MEMBER browserTitle     NOTIFY onBrowserTitleChanged)
-    Q_PROPERTY(bool     browserVisible  MEMBER browserVisible   NOTIFY onBrowserVisibleChanged)
+    Q_PROPERTY(QString  browserURL          MEMBER browserURL           NOTIFY onBrowserURLChanged)
+    Q_PROPERTY(QString  browserTitle        MEMBER browserTitle         NOTIFY onBrowserTitleChanged)
+    Q_PROPERTY(bool     browserVisible      MEMBER browserVisible       NOTIFY onBrowserVisibleChanged)
+    Q_PROPERTY(int      browserLoadProgress MEMBER browserLoadProgress  NOTIFY onbrowserLoadProgressChanged)
 
 signals:
     void onBrowserURLChanged(const QString &value);
     void onBrowserTitleChanged(const QString &value);
     void onBrowserVisibleChanged(bool value);
+    void onbrowserLoadProgressChanged(int value);
 
 private:
     QString browserURL;
     QString browserTitle;
     bool    browserVisible;
+    int     browserLoadProgress;
 };
 
 #endif // SERVERINTERFACE_H

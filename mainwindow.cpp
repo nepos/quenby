@@ -71,6 +71,10 @@ MainWindow::MainWindow(QUrl mainViewUrl, int controlPort, QWidget *parent) :
     connect(browserView, &QWebEngineView::titleChanged, [this](const QString &title) {
         interface.setProperty("browserTitle", title);
     });
+
+    connect(browserView, &QWebEngineView::loadProgress, [this](int progress) {
+        interface.setProperty("browserLoadProgress", progress);
+    });
 }
 
 void MainWindow::onNewServerConnection() {
