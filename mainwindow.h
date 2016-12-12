@@ -19,8 +19,6 @@ public:
     explicit MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, int controlPort, QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
-    void init(QUrl mainViewUrl, int controlPort);
-
 private:
     QWidget *window;
 
@@ -32,7 +30,8 @@ private:
 
     QList<QWebEngineView*> views;
 
-    QWebEngineView *lookupView(int index);
+    QWebEngineView *addWebView();
+    QWebEngineView *lookupWebView(int index);
 };
 
 #endif // MAINWINDOW_H

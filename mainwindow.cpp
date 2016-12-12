@@ -28,12 +28,9 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     window = new QWidget;
     setCentralWidget(window);
 
-    QWebEngineView *view = new QWebEngineView(window);
-    WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
-    view->setPage(page);
+    QWebEngineView *view = addWebView();
     view->setUrl(mainViewUrl);
     view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
-    views << view;
 
     socketServer = new QWebSocketServer(QStringLiteral("Control server"), QWebSocketServer::NonSecureMode, this);
     connect(socketServer, &QWebSocketServer::newConnection, [this]() {
@@ -53,13 +50,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     socketServer->listen(QHostAddress::LocalHost, controlPort);
 
     connect(&interface, &ServerInterface::onCreateWebViewRequested, [this]() {
-        QWebEngineView *view = new QWebEngineView(window);
-        WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
-        view->setPage(page);
-        view->setAutoFillBackground(true);
-        page->setBackgroundColor(Qt::transparent);
         int index = views.size();
-        views << view;
+        QWebEngineView *view = addWebView();
 
         connect(view, &QWebEngineView::urlChanged, [this, index](const QUrl &url) {
             emit interface.onWebViewURLChanged(index, url.url());
@@ -77,7 +69,7 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     });
 
     connect(&interface, &ServerInterface::onDestroyWebViewRequested, [this](int index) {
-        QWebEngineView *view = lookupView(index);
+        QWebEngineView *view = lookupWebView(index);
         if (view && index > 0) {
             view->setVisible(false);
             views[index] = Q_NULLPTR;
@@ -86,33 +78,53 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     });
 
     connect(&interface, &ServerInterface::onWebViewURLChangeRequested, [this](int index, const QString &url) {
-        QWebEngineView *view = lookupView(index);
+        QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setUrl(QUrl(url));
     });
 
     connect(&interface, &ServerInterface::onWebViewGeometryChangeRequested, [this](int index, int x, int y, int w, int h) {
-        QWebEngineView *view = lookupView(index);
+        QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setGeometry(x, y, w, h);
     });
 
     connect(&interface, &ServerInterface::onWebViewVisibleChangeRequested, [this](int index, bool value) {
-        QWebEngineView *view = lookupView(index);
+        QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setVisible(value);
     });
 
     connect(&interface, &ServerInterface::onWebViewTransparentBackgroundChangeRequested, [this](int index, bool value) {
-        QWebEngineView *view = lookupView(index);
-        if (view)
-            view->setAutoFillBackground(!value);
+        QWebEngineView *view = lookupWebView(index);
+        if (view) {
+            if (value) {
+                view->setAutoFillBackground(false);
+                view->page()->setBackgroundColor(Qt::transparent);
+            } else {
+                view->setAutoFillBackground(true);
+                view->page()->setBackgroundColor(Qt::white);
+            }
+        }
     });
 
     channel.registerObject(QStringLiteral("main"), &interface);
 }
 
-QWebEngineView *MainWindow::lookupView(int index) {
+QWebEngineView *MainWindow::addWebView()
+{
+    QWebEngineView *view = new QWebEngineView(window);
+    view->setAutoFillBackground(true);
+
+    WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
+    view->setPage(page);
+
+    views << view;
+
+    return view;
+}
+
+QWebEngineView *MainWindow::lookupWebView(int index) {
     if (index >= 0 && index < views.size())
         return views[index];
 
