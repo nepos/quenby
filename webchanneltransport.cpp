@@ -35,7 +35,7 @@ void WebChannelTransport::onTextMessageReceived(const QString &message) {
     QJsonParseError error;
     QJsonDocument document = QJsonDocument::fromJson(message.toUtf8(), &error);
 
-    qWarning() << "<<" << document.object();
+    //qDebug() << "<<" << document.object();
 
     if (error.error)
         qWarning() << "QJsonDocument::fromJson() failed: " << error.errorString();
@@ -48,6 +48,6 @@ void WebChannelTransport::onTextMessageReceived(const QString &message) {
 void WebChannelTransport::sendMessage(const QJsonObject &json)
 {
     QJsonDocument document(json);
-    qWarning() << ">>" << document.toJson(QJsonDocument::Compact);
+    //qDebug() << ">>" << document.toJson(QJsonDocument::Compact);
     socket->sendTextMessage(document.toJson(QJsonDocument::Compact));
 }
