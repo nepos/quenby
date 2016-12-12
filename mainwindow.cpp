@@ -56,6 +56,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
         QWebEngineView *view = new QWebEngineView(window);
         WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
         view->setPage(page);
+        view->setAutoFillBackground(true);
+        page->setBackgroundColor(Qt::transparent);
         int index = views.size();
         views << view;
 
@@ -99,6 +101,12 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
         QWebEngineView *view = lookupView(index);
         if (view)
             view->setVisible(value);
+    });
+
+    connect(&interface, &ServerInterface::onWebViewTransparentBackgroundChangeRequested, [this](int index, bool value) {
+        QWebEngineView *view = lookupView(index);
+        if (view)
+            view->setAutoFillBackground(!value);
     });
 
     channel.registerObject(QStringLiteral("main"), &interface);

@@ -50,12 +50,17 @@ public slots:
         emit onWebViewVisibleChangeRequested(index, visible);
     };
 
+    void setWebViewTransparentBackground(int index, bool visible) {
+        emit onWebViewTransparentBackgroundChangeRequested(index, visible);
+    };
+
 signals:
     // App → Server
     int onCreateWebViewRequested();
     void onDestroyWebViewRequested(int index);
     void onWebViewGeometryChangeRequested(int index, int x, int y, int w, int h);
     void onWebViewVisibleChangeRequested(int index, bool value);
+    void onWebViewTransparentBackgroundChangeRequested(int index, bool value);
 
     // App ←/→ Server
     void onWebViewURLChanged(int index, const QString &value);
