@@ -23,9 +23,6 @@
 
 #include "mainwindow.h"
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 800
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -34,18 +31,26 @@ int main(int argc, char *argv[])
     parser.setApplicationDescription("Simple kiosk browser");
     parser.addHelpOption();
 
+    QCommandLineOption widthOption(QStringList() << "w" << "width", "Main web view width", NULL, QStringLiteral("1280"));
+    parser.addOption(widthOption);
+
+    QCommandLineOption heightOption(QStringList() << "i" << "height", "Main web view height", NULL, QStringLiteral("800"));
+    parser.addOption(heightOption);
+
     QCommandLineOption fullscreenOption(QStringList() << "f" << "fullscreen", "Fullscreen display [default: off].");
     parser.addOption(fullscreenOption);
 
     QCommandLineOption defaultViewUrlOption(QStringList() << "u" << "url", "Default view URL", NULL, QStringLiteral("http://localhost:3000/"));
     parser.addOption(defaultViewUrlOption);
 
-    QCommandLineOption controlServerPortOption(QStringList() << "p" << "port", "Control server port", NULL, "3001");
+    QCommandLineOption controlServerPortOption(QStringList() << "p" << "port", "Control server port", NULL, QStringLiteral("3001"));
     parser.addOption(controlServerPortOption);
 
     parser.process(a);
 
     MainWindow w(parser.value(defaultViewUrlOption),
+                 parser.value(widthOption).toInt(),
+                 parser.value(heightOption).toInt(),
                  parser.value(controlServerPortOption).toInt());
 
     if (parser.isSet(fullscreenOption)) {
@@ -53,7 +58,8 @@ int main(int argc, char *argv[])
         w.setWindowState(Qt::WindowFullScreen);
         w.showFullScreen();
     } else {
-        w.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        w.setFixedSize(parser.value(widthOption).toInt(),
+                       parser.value(heightOption).toInt());
         w.show();
     }
 

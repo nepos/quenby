@@ -22,77 +22,93 @@
 #include "mainwindow.h"
 #include "webpage.h"
 
-MainWindow::MainWindow(QUrl mainViewUrl, int controlPort, QWidget *parent) :
-    QMainWindow(parent), socketClients(), channel(), interface()
+MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, int controlPort, QWidget *parent) :
+    QMainWindow(parent), socketClients(), channel(), interface(), views()
 {
-    layout = new QVBoxLayout;
-    layout->setSpacing(0);
-    layout->setMargin(0);
-
     window = new QWidget;
-    window->setLayout(layout);
     setCentralWidget(window);
 
-    mainView = new QWebEngineView;
-    mainWebPage = new WebPage(QWebEngineProfile::defaultProfile(), mainView);
-    mainView->setPage(mainWebPage);
-    mainView->setUrl(mainViewUrl);
-    layout->addWidget(mainView);
-
-    browserView = new QWebEngineView;
-    browserWebPage = new WebPage(QWebEngineProfile::defaultProfile(), browserView);
-    browserView->setPage(browserWebPage);
-    browserView->setFixedHeight(600);
+    QWebEngineView *view = new QWebEngineView(window);
+    WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
+    view->setPage(page);
+    view->setUrl(mainViewUrl);
+    view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
+    views << view;
 
     socketServer = new QWebSocketServer(QStringLiteral("Control server"), QWebSocketServer::NonSecureMode, this);
-    connect(socketServer, &QWebSocketServer::newConnection, this, &MainWindow::onNewServerConnection);
+    connect(socketServer, &QWebSocketServer::newConnection, [this]() {
+        QWebSocket *socket = socketServer->nextPendingConnection();
+        WebChannelTransport *transport = new WebChannelTransport(socket);
 
-    channel.registerObject(QStringLiteral("main"), &interface);
-    socketServer->listen(QHostAddress::LocalHost, controlPort);
+        connect(transport, &WebChannelTransport::disconnected, [this, transport]() {
+            channel.disconnectFrom(transport);
+            socketClients.removeAll(transport);
+            delete transport;
+        });
 
-    connect(&interface, &ServerInterface::onBrowserURLChanged, [this](const QString &value) {
-        browserView->setUrl(QUrl(value));
+        channel.connectTo(transport);
+        socketClients << transport;
     });
 
-    connect(&interface, &ServerInterface::onBrowserVisibleChanged, [this](bool value) {
-        if (value) {
-            browserView->setHidden(false);
-            layout->addWidget(browserView);
-        } else {
-            browserView->setHidden(true);
-            layout->removeWidget(browserView);
+    socketServer->listen(QHostAddress::LocalHost, controlPort);
+
+    connect(&interface, &ServerInterface::onCreateWebViewRequested, [this]() {
+        QWebEngineView *view = new QWebEngineView(window);
+        WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
+        view->setPage(page);
+        int index = views.size();
+        views << view;
+
+        connect(view, &QWebEngineView::urlChanged, [this, index](const QUrl &url) {
+            emit interface.onWebViewURLChanged(index, url.url());
+        });
+
+        connect(view, &QWebEngineView::titleChanged, [this, index](const QString &title) {
+            emit interface.onWebViewTitleChanged(index, title);
+        });
+
+        connect(view, &QWebEngineView::loadProgress, [this, index](int progress) {
+            emit interface.onWebViewLoadProgressChanged(index, progress);
+        });
+
+        return index;
+    });
+
+    connect(&interface, &ServerInterface::onDestroyWebViewRequested, [this](int index) {
+        QWebEngineView *view = lookupView(index);
+        if (view && index > 0) {
+            view->setVisible(false);
+            views[index] = Q_NULLPTR;
+            delete view;
         }
     });
 
-    connect(browserView, &QWebEngineView::urlChanged, [this](const QUrl &url) {
-        interface.setProperty("browserURL", url.url());
+    connect(&interface, &ServerInterface::onWebViewURLChangeRequested, [this](int index, const QString &url) {
+        QWebEngineView *view = lookupView(index);
+        if (view)
+            view->setUrl(QUrl(url));
     });
 
-    connect(browserView, &QWebEngineView::titleChanged, [this](const QString &title) {
-        interface.setProperty("browserTitle", title);
+    connect(&interface, &ServerInterface::onWebViewGeometryChangeRequested, [this](int index, int x, int y, int w, int h) {
+        QWebEngineView *view = lookupView(index);
+        if (view)
+            view->setGeometry(x, y, w, h);
     });
 
-    connect(browserView, &QWebEngineView::loadProgress, [this](int progress) {
-        interface.setProperty("browserLoadProgress", progress);
+    connect(&interface, &ServerInterface::onWebViewVisibleChangeRequested, [this](int index, bool value) {
+        QWebEngineView *view = lookupView(index);
+        if (view)
+            view->setVisible(value);
     });
+
+    channel.registerObject(QStringLiteral("main"), &interface);
 }
 
-void MainWindow::onNewServerConnection() {
-    QWebSocket *socket = socketServer->nextPendingConnection();
-    WebChannelTransport *transport = new WebChannelTransport(socket);
+QWebEngineView *MainWindow::lookupView(int index) {
+    if (index >= 0 && index < views.size())
+        return views[index];
 
-    connect(transport, &WebChannelTransport::disconnected, this, &MainWindow::onTransportDisconnected);
-    channel.connectTo(transport);
-    socketClients << transport;
-}
-
-void MainWindow::onTransportDisconnected() {
-    WebChannelTransport *transport = qobject_cast<WebChannelTransport *>(sender());
-    if (transport) {
-        channel.disconnectFrom(transport);
-        socketClients.removeAll(transport);
-        delete transport;
-    }
+    return Q_NULLPTR;
 }
 
 MainWindow::~MainWindow()

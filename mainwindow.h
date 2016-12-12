@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QList>
-#include <QVBoxLayout>
 #include <QWebEngineView>
 #include <QWebChannel>
 #include <QtWebSockets/QWebSocketServer>
@@ -17,28 +16,23 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QUrl mainViewUrl, int controlPort, QWidget *parent = 0);
+    explicit MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, int controlPort, QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
-private Q_SLOTS:
-    void onNewServerConnection();
-    void onTransportDisconnected();
+    void init(QUrl mainViewUrl, int controlPort);
 
 private:
     QWidget *window;
-    QVBoxLayout *layout;
-
-    QWebEngineView *mainView;
-    QWebEngineView *browserView;
-
-    WebPage *mainWebPage;
-    WebPage *browserWebPage;
 
     QWebSocketServer *socketServer;
     QList<WebChannelTransport *> socketClients;
-    QWebChannel channel;
 
+    QWebChannel channel;
     ServerInterface interface;
+
+    QList<QWebEngineView*> views;
+
+    QWebEngineView *lookupView(int index);
 };
 
 #endif // MAINWINDOW_H

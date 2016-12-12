@@ -29,22 +29,41 @@ class ServerInterface : public QObject
 public:
     explicit ServerInterface(QObject *parent = 0);
 
-    Q_PROPERTY(QString  browserURL          MEMBER browserURL           NOTIFY onBrowserURLChanged)
-    Q_PROPERTY(QString  browserTitle        MEMBER browserTitle         NOTIFY onBrowserTitleChanged)
-    Q_PROPERTY(bool     browserVisible      MEMBER browserVisible       NOTIFY onBrowserVisibleChanged)
-    Q_PROPERTY(int      browserLoadProgress MEMBER browserLoadProgress  NOTIFY onbrowserLoadProgressChanged)
+public slots:
+    int createWebView() {
+        return emit onCreateWebViewRequested();
+    };
+
+    void destroyWebView(int index) {
+        emit onDestroyWebViewRequested(index);
+    };
+
+    void setWebViewUrl(int index, const QString &url) {
+        emit onWebViewURLChangeRequested(index, url);
+    };
+
+    void setWebViewGeometry(int index, int x, int y, int w, int h) {
+        emit onWebViewGeometryChangeRequested(index, x, y, w, h);
+    };
+
+    void setWebViewVisible(int index, bool visible) {
+        emit onWebViewVisibleChangeRequested(index, visible);
+    };
 
 signals:
-    void onBrowserURLChanged(const QString &value);
-    void onBrowserTitleChanged(const QString &value);
-    void onBrowserVisibleChanged(bool value);
-    void onbrowserLoadProgressChanged(int value);
+    // App → Server
+    int onCreateWebViewRequested();
+    void onDestroyWebViewRequested(int index);
+    void onWebViewGeometryChangeRequested(int index, int x, int y, int w, int h);
+    void onWebViewVisibleChangeRequested(int index, bool value);
 
-private:
-    QString browserURL;
-    QString browserTitle;
-    bool    browserVisible;
-    int     browserLoadProgress;
+    // App ←/→ Server
+    void onWebViewURLChanged(int index, const QString &value);
+    void onWebViewURLChangeRequested(int index, const QString &value);
+
+    // Server → App
+    void onWebViewTitleChanged(int index, const QString &value);
+    void onWebViewLoadProgressChanged(int index, int value);
 };
 
 #endif // SERVERINTERFACE_H
