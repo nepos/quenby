@@ -43,9 +43,6 @@ int main(int argc, char *argv[])
     QCommandLineOption defaultViewUrlOption(QStringList() << "u" << "url", "Default view URL", NULL, QStringLiteral("http://localhost:3000/"));
     parser.addOption(defaultViewUrlOption);
 
-    QCommandLineOption controlServerPortOption(QStringList() << "p" << "port", "Control server port", NULL, QStringLiteral("3001"));
-    parser.addOption(controlServerPortOption);
-
 #ifdef QT_DEBUG
     QCommandLineOption debugPortOption(QStringList() << "d" << "debug", "WebEngine debug port", NULL, QStringLiteral("3002"));
     parser.addOption(debugPortOption);
@@ -59,8 +56,7 @@ int main(int argc, char *argv[])
 
     MainWindow w(parser.value(defaultViewUrlOption),
                  parser.value(widthOption).toInt(),
-                 parser.value(heightOption).toInt(),
-                 parser.value(controlServerPortOption).toInt());
+                 parser.value(heightOption).toInt());
 
     if (parser.isSet(fullscreenOption)) {
         w.setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);

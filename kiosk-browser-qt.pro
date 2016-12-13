@@ -15,14 +15,12 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     webpage.cpp \
-    webchanneltransport.cpp \
-    serverinterface.cpp
+    controlinterface.cpp
 
 HEADERS  += \
     mainwindow.h \
     webpage.h \
-    webchanneltransport.h \
-    serverinterface.h
+    controlinterface.h
 
 FORMS    += mainwindow.ui
 

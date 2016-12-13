@@ -7,8 +7,7 @@
 #include <QWebChannel>
 #include <QtWebSockets/QWebSocketServer>
 
-#include "serverinterface.h"
-#include "webchanneltransport.h"
+#include "controlinterface.h"
 #include "webpage.h"
 
 class MainWindow : public QMainWindow
@@ -16,17 +15,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, int controlPort, QWidget *parent = Q_NULLPTR);
+    explicit MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
 private:
     QWidget *window;
 
-    QWebSocketServer *socketServer;
-    QList<WebChannelTransport *> socketClients;
-
-    QWebChannel channel;
-    ServerInterface interface;
+    void createControlInterface();
+    QWebChannel controlChannel;
+    ControlInterface controlInterface;
 
     QList<QWebEngineView*> views;
 

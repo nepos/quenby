@@ -17,17 +17,17 @@
   along with this software; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#ifndef SERVERINTERFACE_H
-#define SERVERINTERFACE_H
+#ifndef CONTROLINTERFACE_H
+#define CONTROLINTERFACE_H
 
 #include <QObject>
 
-class ServerInterface : public QObject
+class ControlInterface : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit ServerInterface(QObject *parent = 0);
+    explicit ControlInterface(QObject *parent = 0);
 
 public slots:
     int createWebView() {
@@ -71,4 +71,4 @@ signals:
     void onWebViewLoadProgressChanged(int index, int value);
 };
 
-#endif // SERVERINTERFACE_H
+#endif // CONTROLINTERFACE_H

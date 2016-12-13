@@ -22,53 +22,42 @@
 #include "mainwindow.h"
 #include "webpage.h"
 
-MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, int controlPort, QWidget *parent) :
-    QMainWindow(parent), socketClients(), channel(), interface(), views()
+MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, QWidget *parent) :
+    QMainWindow(parent), controlChannel(), controlInterface(), views()
 {
     window = new QWidget;
     setCentralWidget(window);
 
+    createControlInterface();
+
     QWebEngineView *view = addWebView();
+    view->page()->setWebChannel(&controlChannel);
     view->setUrl(mainViewUrl);
     view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
+}
 
-    socketServer = new QWebSocketServer(QStringLiteral("Control server"), QWebSocketServer::NonSecureMode, this);
-    connect(socketServer, &QWebSocketServer::newConnection, [this]() {
-        QWebSocket *socket = socketServer->nextPendingConnection();
-        WebChannelTransport *transport = new WebChannelTransport(socket);
-
-        connect(transport, &WebChannelTransport::disconnected, [this, transport]() {
-            channel.disconnectFrom(transport);
-            socketClients.removeAll(transport);
-            delete transport;
-        });
-
-        channel.connectTo(transport);
-        socketClients << transport;
-    });
-
-    socketServer->listen(QHostAddress::LocalHost, controlPort);
-
-    connect(&interface, &ServerInterface::onCreateWebViewRequested, [this]() {
+void MainWindow::createControlInterface()
+{
+    connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this]() {
         int index = views.size();
         QWebEngineView *view = addWebView();
 
         connect(view, &QWebEngineView::urlChanged, [this, index](const QUrl &url) {
-            emit interface.onWebViewURLChanged(index, url.url());
+            emit controlInterface.onWebViewURLChanged(index, url.url());
         });
 
         connect(view, &QWebEngineView::titleChanged, [this, index](const QString &title) {
-            emit interface.onWebViewTitleChanged(index, title);
+            emit controlInterface.onWebViewTitleChanged(index, title);
         });
 
         connect(view, &QWebEngineView::loadProgress, [this, index](int progress) {
-            emit interface.onWebViewLoadProgressChanged(index, progress);
+            emit controlInterface.onWebViewLoadProgressChanged(index, progress);
         });
 
         return index;
     });
 
-    connect(&interface, &ServerInterface::onDestroyWebViewRequested, [this](int index) {
+    connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int index) {
         QWebEngineView *view = lookupWebView(index);
         if (view && index > 0) {
             view->setVisible(false);
@@ -77,25 +66,25 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
         }
     });
 
-    connect(&interface, &ServerInterface::onWebViewURLChangeRequested, [this](int index, const QString &url) {
+    connect(&controlInterface, &ControlInterface::onWebViewURLChangeRequested, [this](int index, const QString &url) {
         QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setUrl(QUrl(url));
     });
 
-    connect(&interface, &ServerInterface::onWebViewGeometryChangeRequested, [this](int index, int x, int y, int w, int h) {
+    connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequested, [this](int index, int x, int y, int w, int h) {
         QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setGeometry(x, y, w, h);
     });
 
-    connect(&interface, &ServerInterface::onWebViewVisibleChangeRequested, [this](int index, bool value) {
+    connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequested, [this](int index, bool value) {
         QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setVisible(value);
     });
 
-    connect(&interface, &ServerInterface::onWebViewTransparentBackgroundChangeRequested, [this](int index, bool value) {
+    connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequested, [this](int index, bool value) {
         QWebEngineView *view = lookupWebView(index);
         if (view) {
             if (value) {
@@ -108,7 +97,7 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
         }
     });
 
-    channel.registerObject(QStringLiteral("main"), &interface);
+    controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
 }
 
 QWebEngineView *MainWindow::addWebView()
