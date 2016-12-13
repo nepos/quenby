@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     QCommandLineOption controlServerPortOption(QStringList() << "p" << "port", "Control server port", NULL, QStringLiteral("3001"));
     parser.addOption(controlServerPortOption);
 
- #ifdef QT_DEBUG
+#ifdef QT_DEBUG
     QCommandLineOption debugPortOption(QStringList() << "d" << "debug", "WebEngine debug port", NULL, QStringLiteral("3002"));
     parser.addOption(debugPortOption);
 #endif
