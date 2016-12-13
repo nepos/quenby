@@ -31,7 +31,8 @@ can be used for the interaction.
 
 ## Main widget control interface
 
-In the main widget, the channel provides the following interface. All other widgets do not have access to this channel for now.
+In the main widget, the channel provides the following interface through the `main` object.
+All other widgets do not have access to this channel for now.
 
 ### Function calls
 
