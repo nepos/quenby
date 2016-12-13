@@ -31,20 +31,34 @@ int main(int argc, char *argv[])
     parser.setApplicationDescription("Simple kiosk browser");
     parser.addHelpOption();
 
-    QCommandLineOption widthOption(QStringList() << "w" << "width", "Main web view width", NULL, QStringLiteral("1280"));
+    QCommandLineOption widthOption(QStringList() <<
+                                   "w" << "width",
+                                   "Main web view width [default: 1280].",
+                                   NULL, QStringLiteral("1280"));
     parser.addOption(widthOption);
 
-    QCommandLineOption heightOption(QStringList() << "i" << "height", "Main web view height", NULL, QStringLiteral("800"));
+    QCommandLineOption heightOption(QStringList() <<
+                                    "i" << "height",
+                                    "Main web view height [default: 800].",
+                                    NULL, QStringLiteral("800"));
     parser.addOption(heightOption);
 
-    QCommandLineOption fullscreenOption(QStringList() << "f" << "fullscreen", "Fullscreen display [default: off].");
+    QCommandLineOption fullscreenOption(QStringList() <<
+                                        "f" << "fullscreen",
+                                        "Fullscreen display [default: off].");
     parser.addOption(fullscreenOption);
 
-    QCommandLineOption defaultViewUrlOption(QStringList() << "u" << "url", "Default view URL", NULL, QStringLiteral("http://localhost:3000/"));
+    QCommandLineOption defaultViewUrlOption(QStringList() <<
+                                            "u" << "url",
+                                            "Default view URL [default: http://localhost:3000/].",
+                                            NULL, QStringLiteral("http://localhost:3000/"));
     parser.addOption(defaultViewUrlOption);
 
 #ifdef QT_DEBUG
-    QCommandLineOption debugPortOption(QStringList() << "d" << "debug", "WebEngine debug port", NULL, QStringLiteral("3002"));
+    QCommandLineOption debugPortOption(QStringList() <<
+                                       "d" << "debug",
+                                       "WebEngine debug port [default: 3002].",
+                                       NULL, QStringLiteral("3002"));
     parser.addOption(debugPortOption);
 #endif
 

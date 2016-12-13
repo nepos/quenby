@@ -50,8 +50,8 @@ public slots:
         emit onWebViewVisibleChangeRequested(index, visible);
     };
 
-    void setWebViewTransparentBackground(int index, bool visible) {
-        emit onWebViewTransparentBackgroundChangeRequested(index, visible);
+    void setWebViewTransparentBackground(int index, bool transparent) {
+        emit onWebViewTransparentBackgroundChangeRequested(index, transparent);
     };
 
 signals:
