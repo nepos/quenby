@@ -25,7 +25,7 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Simple kiosk browser");
@@ -46,7 +46,16 @@ int main(int argc, char *argv[])
     QCommandLineOption controlServerPortOption(QStringList() << "p" << "port", "Control server port", NULL, QStringLiteral("3001"));
     parser.addOption(controlServerPortOption);
 
-    parser.process(a);
+ #ifdef QT_DEBUG
+    QCommandLineOption debugPortOption(QStringList() << "d" << "debug", "WebEngine debug port", NULL, QStringLiteral("3002"));
+    parser.addOption(debugPortOption);
+#endif
+
+    parser.process(app);
+
+#ifdef QT_DEBUG
+    qputenv("QTWEBENGINE_REMOTE_DEBUGGING", parser.value(debugPortOption).toUtf8());
+#endif
 
     MainWindow w(parser.value(defaultViewUrlOption),
                  parser.value(widthOption).toInt(),
@@ -63,5 +72,5 @@ int main(int argc, char *argv[])
         w.show();
     }
 
-    return a.exec();
+    return app.exec();
 }
