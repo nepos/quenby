@@ -22,6 +22,6 @@ HEADERS  += \
     webpage.h \
     controlinterface.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
 DISTFILES +=
