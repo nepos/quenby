@@ -34,6 +34,10 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     view->page()->setWebChannel(&controlChannel);
     view->setUrl(mainViewUrl);
     view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
+
+    connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
+        setWindowTitle(title);
+    });
 }
 
 void MainWindow::createControlInterface()
