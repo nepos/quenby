@@ -34,13 +34,13 @@ int main(int argc, char *argv[])
     QCommandLineOption widthOption(QStringList() <<
                                    "w" << "width",
                                    "Main web view width [default: 1280].",
-                                   NULL, QStringLiteral("1280"));
+                                   QStringLiteral("width"), QStringLiteral("1280"));
     parser.addOption(widthOption);
 
     QCommandLineOption heightOption(QStringList() <<
                                     "i" << "height",
                                     "Main web view height [default: 800].",
-                                    NULL, QStringLiteral("800"));
+                                    QStringLiteral("height"), QStringLiteral("800"));
     parser.addOption(heightOption);
 
     QCommandLineOption fullscreenOption(QStringList() <<
@@ -51,14 +51,14 @@ int main(int argc, char *argv[])
     QCommandLineOption defaultViewUrlOption(QStringList() <<
                                             "u" << "url",
                                             "Default view URL [default: http://localhost:3000/].",
-                                            NULL, QStringLiteral("http://localhost:3000/"));
+                                            QStringLiteral("url"), QStringLiteral("http://localhost:3000/"));
     parser.addOption(defaultViewUrlOption);
 
 #ifdef QT_DEBUG
     QCommandLineOption debugPortOption(QStringList() <<
                                        "d" << "debug",
                                        "WebEngine debug port [default: 3002].",
-                                       NULL, QStringLiteral("3002"));
+                                       QStringLiteral("debug"), QStringLiteral("3002"));
     parser.addOption(debugPortOption);
 #endif
 
