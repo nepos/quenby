@@ -35,33 +35,33 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     view->setUrl(mainViewUrl);
     view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
 
-    connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
+    QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
         setWindowTitle(title);
     });
 }
 
 void MainWindow::createControlInterface()
 {
-    connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this]() {
+    QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this]() {
         int index = views.size();
         QWebEngineView *view = addWebView();
 
-        connect(view, &QWebEngineView::urlChanged, [this, index](const QUrl &url) {
+        QObject::connect(view, &QWebEngineView::urlChanged, [this, index](const QUrl &url) {
             emit controlInterface.onWebViewURLChanged(index, url.url());
         });
 
-        connect(view, &QWebEngineView::titleChanged, [this, index](const QString &title) {
+        QObject::connect(view, &QWebEngineView::titleChanged, [this, index](const QString &title) {
             emit controlInterface.onWebViewTitleChanged(index, title);
         });
 
-        connect(view, &QWebEngineView::loadProgress, [this, index](int progress) {
+        QObject::connect(view, &QWebEngineView::loadProgress, [this, index](int progress) {
             emit controlInterface.onWebViewLoadProgressChanged(index, progress);
         });
 
         return index;
     });
 
-    connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int index) {
+    QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int index) {
         QWebEngineView *view = lookupWebView(index);
         if (view && index > 0) {
             view->setVisible(false);
@@ -70,25 +70,25 @@ void MainWindow::createControlInterface()
         }
     });
 
-    connect(&controlInterface, &ControlInterface::onWebViewURLChangeRequested, [this](int index, const QString &url) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewURLChangeRequested, [this](int index, const QString &url) {
         QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setUrl(QUrl(url));
     });
 
-    connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequested, [this](int index, int x, int y, int w, int h) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequested, [this](int index, int x, int y, int w, int h) {
         QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setGeometry(x, y, w, h);
     });
 
-    connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequested, [this](int index, bool value) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequested, [this](int index, bool value) {
         QWebEngineView *view = lookupWebView(index);
         if (view)
             view->setVisible(value);
     });
 
-    connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequested, [this](int index, bool value) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequested, [this](int index, bool value) {
         QWebEngineView *view = lookupWebView(index);
         if (view) {
             if (value) {
