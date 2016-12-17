@@ -117,7 +117,8 @@ QWebEngineView *MainWindow::addWebView()
     return view;
 }
 
-QWebEngineView *MainWindow::lookupWebView(int index) {
+QWebEngineView *MainWindow::lookupWebView(int index)
+{
     if (index >= 0 && index < views.size())
         return views[index];
 

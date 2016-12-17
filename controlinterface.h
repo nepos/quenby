@@ -30,23 +30,28 @@ public:
     explicit ControlInterface(QObject *parent = 0);
 
 public slots:
-    int createWebView() {
+    int createWebView()
+    {
         return emit onCreateWebViewRequested();
     };
 
-    void destroyWebView(int index) {
+    void destroyWebView(int index)
+    {
         emit onDestroyWebViewRequested(index);
     };
 
-    void setWebViewUrl(int index, const QString &url) {
+    void setWebViewUrl(int index, const QString &url)
+    {
         emit onWebViewURLChangeRequested(index, url);
     };
 
-    void setWebViewGeometry(int index, int x, int y, int w, int h) {
+    void setWebViewGeometry(int index, int x, int y, int w, int h)
+    {
         emit onWebViewGeometryChangeRequested(index, x, y, w, h);
     };
 
-    void setWebViewVisible(int index, bool visible) {
+    void setWebViewVisible(int index, bool visible)
+    {
         emit onWebViewVisibleChangeRequested(index, visible);
     };
 
