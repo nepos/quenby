@@ -1,0 +1,9 @@
+[Unit]
+Description=Nepos kiosk browser
+After=weston.service
+
+[Service]
+Environment=XDG_RUNTIME_DIR=/tmp/weston QT_QPA_PLATFORM=wayland-egl
+ExecStart=/app/kiosk-browser-qt/kiosk-browser-qt --fullscreen
+Restart=always
+
