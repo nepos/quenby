@@ -72,13 +72,14 @@ int main(int argc, char *argv[])
                  parser.value(widthOption).toInt(),
                  parser.value(heightOption).toInt());
 
+    w.setFixedSize(parser.value(widthOption).toInt(),
+                   parser.value(heightOption).toInt());
+
     if (parser.isSet(fullscreenOption)) {
         w.setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
         w.setWindowState(Qt::WindowFullScreen);
         w.showFullScreen();
     } else {
-        w.setFixedSize(parser.value(widthOption).toInt(),
-                       parser.value(heightOption).toInt());
         w.show();
     }
 
