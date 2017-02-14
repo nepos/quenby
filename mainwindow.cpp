@@ -28,12 +28,16 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     window = new QWidget;
     setCentralWidget(window);
 
+    setAttribute(Qt::WA_TranslucentBackground);
+
     createControlInterface();
 
     QWebEngineView *view = addWebView();
     view->page()->setWebChannel(&controlChannel);
     view->setUrl(mainViewUrl);
     view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
+    view->setAutoFillBackground(false);
+    view->page()->setBackgroundColor(Qt::transparent);
 
     QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
         setWindowTitle(title);
