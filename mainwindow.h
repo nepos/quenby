@@ -1,5 +1,5 @@
 /***
-  Copyright (c) 2016 Nepos GmbH
+  Copyright (c) 2017 Nepos GmbH
 
   Authors: Daniel Mack <daniel@nepos.io>
 
