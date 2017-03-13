@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
     if (parser.isSet(fullscreenOption)) {
         w.setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
         w.setWindowState(Qt::WindowFullScreen);
+        w.move(0, 0);
         w.showFullScreen();
     } else {
         w.show();
