@@ -3,5 +3,5 @@
 .*.stash
 Makefile
 *.o
-kiosk-browser-qt
+quenby
 moc_*

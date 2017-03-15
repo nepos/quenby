@@ -1,3 +1,5 @@
+> Quenby (n.): A stubborn spot on a window which you spend twenty minutes trying to clean off before discovering it's on the other side of the glass.
+
 # Simple kiosk browser based on Qt/QWebEngine
 
 This project implements a simple kiosk browser that starts off displaying a [QWebEngineView](http://doc.qt.io/qt-5/qwebengineview.html)
@@ -6,7 +8,6 @@ context is provided a [QWebChannel](https://doc.qt.io/qt-5/qwebchannel.html) int
 open new widgets, make them load arbitrary URLs, receive callback if their URLs or HTML titles have changed etc.
 
 # Usage
-
 ```
 $ ./kiosk-browser-qt --help
 Usage: ./kiosk-browser-qt [options]

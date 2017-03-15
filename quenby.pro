@@ -8,7 +8,7 @@ QT += core gui network webenginewidgets webchannel
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = kiosk-browser-qt
+TARGET = quenby
 TEMPLATE = app
 
 SOURCES += \
