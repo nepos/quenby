@@ -33,11 +33,22 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     createControlInterface();
 
     QWebEngineView *view = addWebView();
+    QWebEnginePage *page = view->page();
     view->page()->setWebChannel(&controlChannel);
     view->setUrl(mainViewUrl);
     view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
     view->setAutoFillBackground(false);
-    view->page()->setBackgroundColor(Qt::transparent);
+    page->setBackgroundColor(Qt::transparent);
+    page->setFeaturePermission(mainViewUrl, QWebEnginePage::MediaAudioVideoCapture, QWebEnginePage::PermissionGrantedByUser);
+
+    QObject::connect(page, &QWebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, QWebEnginePage::Feature feature) {
+        enum QWebEnginePage::PermissionPolicy verdict =
+                (securityOrigin.host() == "localhost") ?
+                    QWebEnginePage::PermissionGrantedByUser :
+                    QWebEnginePage::PermissionDeniedByUser;
+
+        page->setFeaturePermission(securityOrigin, feature, verdict);
+    });
 
     QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
         setWindowTitle(title);
