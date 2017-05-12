@@ -17,8 +17,7 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#ifndef CONTROLINTERFACE_H
-#define CONTROLINTERFACE_H
+#pragma once
 
 #include <QObject>
 
@@ -53,5 +52,3 @@ signals:
     void onWebViewTitleChanged(int index, const QString &value);
     void onWebViewLoadProgressChanged(int index, int value);
 };
-
-#endif // CONTROLINTERFACE_H

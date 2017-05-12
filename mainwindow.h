@@ -17,8 +17,7 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <QList>
@@ -66,5 +65,3 @@ private:
     QWebEngineView *lookupWebView(int index);
 	QWebEngineView *lookupVisibleWebView();
 };
-
-#endif // MAINWINDOW_H
