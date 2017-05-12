@@ -44,7 +44,7 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
 	setAttribute(Qt::WA_TranslucentBackground);
 
 	quickWidget->setFocusPolicy(Qt::NoFocus);
-	quickWidget->setSource(QUrl("qrc:/inputpanel.qml"));
+	//quickWidget->setSource(QUrl("qrc:/inputpanel.qml"));
 	quickWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	quickWidget->setVisible(false);
 
