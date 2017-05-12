@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
                                         "Fullscreen display [default: off].");
     parser.addOption(fullscreenOption);
 
-    QCommandLineOption defaultViewUrlOption(QStringList() <<
+	QCommandLineOption defaultViewUrlOption(QStringList() <<
                                             "u" << "url",
                                             "Default view URL [default: http://localhost:3000/].",
                                             QStringLiteral("url"), QStringLiteral("http://localhost:3000/"));

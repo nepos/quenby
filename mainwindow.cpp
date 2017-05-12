@@ -25,7 +25,7 @@
 #include <QApplication>
 
 #include "mainwindow.h"
-#include "webpage.h"
+#include "webenginepage.h"
 
 MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, QWidget *parent) :
 	QMainWindow(parent),
@@ -62,21 +62,21 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
 
 	createControlInterface();
 
-	QWebEngineView *view = addWebView();
-	QWebEnginePage *page = view->page();
+	auto *view = addWebView();
+	auto *page = view->page();
 	view->page()->setWebChannel(&controlChannel);
 	view->setUrl(mainViewUrl);
 	view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
 	view->setAutoFillBackground(false);
 
 	page->setBackgroundColor(Qt::transparent);
-	page->setFeaturePermission(mainViewUrl, QWebEnginePage::MediaAudioVideoCapture, QWebEnginePage::PermissionGrantedByUser);
+	page->setFeaturePermission(mainViewUrl, WebEnginePage::MediaAudioVideoCapture, WebEnginePage::PermissionGrantedByUser);
 
-	QObject::connect(page, &QWebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, QWebEnginePage::Feature feature) {
-		enum QWebEnginePage::PermissionPolicy verdict =
+	QObject::connect(page, &WebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, WebEnginePage::Feature feature) {
+		enum WebEnginePage::PermissionPolicy verdict =
 				(securityOrigin.host() == "localhost") ?
-							QWebEnginePage::PermissionGrantedByUser :
-							QWebEnginePage::PermissionDeniedByUser;
+							WebEnginePage::PermissionGrantedByUser :
+							WebEnginePage::PermissionDeniedByUser;
 
 				page->setFeaturePermission(securityOrigin, feature, verdict);
 	});
@@ -186,7 +186,7 @@ QWebEngineView *MainWindow::addWebView()
 	QWebEngineView *view = new QWebEngineView(browserWidget);
 	view->setAutoFillBackground(true);
 
-	WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
+	WebEnginePage *page = new WebEnginePage(QWebEngineProfile::defaultProfile(), view);
 	view->setPage(page);
 
 	views << view;

@@ -14,13 +14,13 @@ TEMPLATE = app
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    webpage.cpp \
-    controlinterface.cpp
+    controlinterface.cpp \
+    webenginepage.cpp
 
 HEADERS  += \
     mainwindow.h \
-    webpage.h \
-    controlinterface.h
+    controlinterface.h \
+    webenginepage.h
 
 FORMS    +=
 
