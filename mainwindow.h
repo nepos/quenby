@@ -22,12 +22,15 @@
 
 #include <QMainWindow>
 #include <QList>
-#include <QWebEngineView>
 #include <QWebChannel>
 #include <QtWebSockets/QWebSocketServer>
 
 #include "controlinterface.h"
-#include "webpage.h"
+
+class QWidget;
+class QVBoxLayout;
+class QQuickWidget;
+class QWebEngineView;
 
 class MainWindow : public QMainWindow
 {
@@ -37,8 +40,21 @@ public:
     explicit MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
+
+protected:
+	void resizeEvent(QResizeEvent* event);
+
+private slots:
+	void onActiveChanged(bool a);
+	void onWidthChanged(int w);
+	void onHeightChanged(int h);
+
 private:
-    QWidget *window;
+	QWidget *frame;
+	QWidget *browserWidget;
+	QVBoxLayout *layout;
+	QQuickWidget *quickWidget;
+	QObject *inputPanel;
 
     void createControlInterface();
     QWebChannel controlChannel;
@@ -48,6 +64,7 @@ private:
 
     QWebEngineView *addWebView();
     QWebEngineView *lookupWebView(int index);
+	QWebEngineView *lookupVisibleWebView();
 };
 
 #endif // MAINWINDOW_H

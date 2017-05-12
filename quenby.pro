@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui network webenginewidgets webchannel
+QT += core gui network webenginewidgets webchannel quickwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,4 +24,7 @@ HEADERS  += \
 
 FORMS    +=
 
-DISTFILES +=
+DISTFILES += inputpanel.qml
+
+RESOURCES += \
+    resources.qrc

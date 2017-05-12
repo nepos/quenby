@@ -18,129 +18,194 @@
 ***/
 
 #include <QWebEngineProfile>
+#include <QWebEngineView>
+#include <QQuickItem>
+#include <QQuickWidget>
+#include <QVBoxLayout>
+#include <QApplication>
 
 #include "mainwindow.h"
 #include "webpage.h"
 
 MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, QWidget *parent) :
-    QMainWindow(parent), controlChannel(), controlInterface(), views()
+	QMainWindow(parent),
+	frame(new QWidget(this)),
+	browserWidget(new QWidget(this)),
+	layout(new QVBoxLayout(this)),
+	quickWidget(new QQuickWidget(this)),
+	inputPanel(nullptr),
+	controlChannel(),
+	controlInterface(),
+	views()
 {
-    window = new QWidget;
-    setCentralWidget(window);
+	setCentralWidget(frame);
+	frame->setLayout(layout);
 
-    setAttribute(Qt::WA_TranslucentBackground);
+	setAttribute(Qt::WA_TranslucentBackground);
 
-    createControlInterface();
+	quickWidget->setFocusPolicy(Qt::NoFocus);
+	quickWidget->setSource(QUrl("qrc:/inputpanel.qml"));
+	quickWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	quickWidget->setVisible(false);
 
-    QWebEngineView *view = addWebView();
-    QWebEnginePage *page = view->page();
-    view->page()->setWebChannel(&controlChannel);
-    view->setUrl(mainViewUrl);
-    view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
-    view->setAutoFillBackground(false);
-    page->setBackgroundColor(Qt::transparent);
-    page->setFeaturePermission(mainViewUrl, QWebEnginePage::MediaAudioVideoCapture, QWebEnginePage::PermissionGrantedByUser);
+	layout->addWidget(browserWidget);
+	layout->addWidget(quickWidget);
 
-    QObject::connect(page, &QWebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, QWebEnginePage::Feature feature) {
-        enum QWebEnginePage::PermissionPolicy verdict =
-                (securityOrigin.host() == "localhost") ?
-                    QWebEnginePage::PermissionGrantedByUser :
-                    QWebEnginePage::PermissionDeniedByUser;
+	inputPanel = quickWidget->rootObject();
+	if (inputPanel)
+		inputPanel->setProperty("width", size().width());
 
-        page->setFeaturePermission(securityOrigin, feature, verdict);
-    });
+	connect(inputPanel, SIGNAL(activated(bool)), this, SLOT(onActiveChanged(bool)));
+	connect(inputPanel, SIGNAL(heightChanged(int)), this, SLOT(onHeightChanged(int)));
 
-    QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
-        setWindowTitle(title);
-    });
-}
+	createControlInterface();
 
-void MainWindow::createControlInterface()
-{
-    QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this]() {
-        int index = views.size();
-        QWebEngineView *view = addWebView();
+	QWebEngineView *view = addWebView();
+	QWebEnginePage *page = view->page();
+	view->page()->setWebChannel(&controlChannel);
+	view->setUrl(mainViewUrl);
+	view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
+	view->setAutoFillBackground(false);
 
-        QObject::connect(view, &QWebEngineView::urlChanged, [this, index](const QUrl &url) {
-            emit controlInterface.onWebViewURLChanged(index, url.url());
-        });
+	page->setBackgroundColor(Qt::transparent);
+	page->setFeaturePermission(mainViewUrl, QWebEnginePage::MediaAudioVideoCapture, QWebEnginePage::PermissionGrantedByUser);
 
-        QObject::connect(view, &QWebEngineView::titleChanged, [this, index](const QString &title) {
-            emit controlInterface.onWebViewTitleChanged(index, title);
-        });
+	QObject::connect(page, &QWebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, QWebEnginePage::Feature feature) {
+		enum QWebEnginePage::PermissionPolicy verdict =
+				(securityOrigin.host() == "localhost") ?
+							QWebEnginePage::PermissionGrantedByUser :
+							QWebEnginePage::PermissionDeniedByUser;
 
-        QObject::connect(view, &QWebEngineView::loadProgress, [this, index](int progress) {
-            emit controlInterface.onWebViewLoadProgressChanged(index, progress);
-        });
+				page->setFeaturePermission(securityOrigin, feature, verdict);
+	});
 
-        return index;
-    });
-
-    QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int index) {
-        QWebEngineView *view = lookupWebView(index);
-        if (view && index > 0) {
-            view->setVisible(false);
-            views[index] = Q_NULLPTR;
-            delete view;
-        }
-    });
-
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewURLChangeRequested, [this](int index, const QString &url) {
-        QWebEngineView *view = lookupWebView(index);
-        if (view)
-            view->setUrl(QUrl(url));
-    });
-
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequested, [this](int index, int x, int y, int w, int h) {
-        QWebEngineView *view = lookupWebView(index);
-        if (view)
-            view->setGeometry(x, y, w, h);
-    });
-
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequested, [this](int index, bool value) {
-        QWebEngineView *view = lookupWebView(index);
-        if (view)
-            view->setVisible(value);
-    });
-
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequested, [this](int index, bool value) {
-        QWebEngineView *view = lookupWebView(index);
-        if (view) {
-            if (value) {
-                view->setAutoFillBackground(false);
-                view->page()->setBackgroundColor(Qt::transparent);
-            } else {
-                view->setAutoFillBackground(true);
-                view->page()->setBackgroundColor(Qt::white);
-            }
-        }
-    });
-
-    controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
-}
-
-QWebEngineView *MainWindow::addWebView()
-{
-    QWebEngineView *view = new QWebEngineView(window);
-    view->setAutoFillBackground(true);
-
-    WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
-    view->setPage(page);
-
-    views << view;
-
-    return view;
-}
-
-QWebEngineView *MainWindow::lookupWebView(int index)
-{
-    if (index >= 0 && index < views.size())
-        return views[index];
-
-    return Q_NULLPTR;
+	QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
+		setWindowTitle(title);
+	});
 }
 
 MainWindow::~MainWindow()
 {
-    delete window;
+	if (quickWidget)
+		delete quickWidget;
 }
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+	QMainWindow::resizeEvent(event);
+
+	if (inputPanel)
+		inputPanel->setProperty("width", event->size().width());
+}
+
+void MainWindow::onActiveChanged(bool a)
+{
+	quickWidget->setVisible(a);
+}
+
+void MainWindow::onWidthChanged(int w)
+{
+	qDebug() << __PRETTY_FUNCTION__ << " :" << w;
+}
+
+void MainWindow::onHeightChanged(int h)
+{
+	auto newSize = quickWidget->size();
+	newSize.setHeight(h);
+	quickWidget->resize(newSize);
+}
+
+void MainWindow::createControlInterface()
+{
+	QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this]() {
+		int index = views.size();
+		QWebEngineView *view = addWebView();
+
+		QObject::connect(view, &QWebEngineView::urlChanged, [this, index](const QUrl &url) {
+			emit controlInterface.onWebViewURLChanged(index, url.url());
+		});
+
+		QObject::connect(view, &QWebEngineView::titleChanged, [this, index](const QString &title) {
+			emit controlInterface.onWebViewTitleChanged(index, title);
+		});
+
+		QObject::connect(view, &QWebEngineView::loadProgress, [this, index](int progress) {
+			emit controlInterface.onWebViewLoadProgressChanged(index, progress);
+		});
+
+		return index;
+	});
+
+	QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int index) {
+		QWebEngineView *view = lookupWebView(index);
+		if (view && index > 0) {
+			view->setVisible(false);
+			views[index] = Q_NULLPTR;
+			delete view;
+		}
+	});
+
+	QObject::connect(&controlInterface, &ControlInterface::onWebViewURLChangeRequested, [this](int index, const QString &url) {
+		QWebEngineView *view = lookupWebView(index);
+		if (view)
+			view->setUrl(QUrl(url));
+	});
+
+	QObject::connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequested, [this](int index, int x, int y, int w, int h) {
+		QWebEngineView *view = lookupWebView(index);
+		if (view)
+			view->setGeometry(x, y, w, h);
+	});
+
+	QObject::connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequested, [this](int index, bool value) {
+		QWebEngineView *view = lookupWebView(index);
+		if (view)
+			view->setVisible(value);
+	});
+
+	QObject::connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequested, [this](int index, bool value) {
+		QWebEngineView *view = lookupWebView(index);
+		if (view) {
+			if (value) {
+				view->setAutoFillBackground(false);
+				view->page()->setBackgroundColor(Qt::transparent);
+			} else {
+				view->setAutoFillBackground(true);
+				view->page()->setBackgroundColor(Qt::white);
+			}
+		}
+	});
+
+	controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
+}
+
+QWebEngineView *MainWindow::addWebView()
+{
+	QWebEngineView *view = new QWebEngineView(browserWidget);
+	view->setAutoFillBackground(true);
+
+	WebPage *page = new WebPage(QWebEngineProfile::defaultProfile(), view);
+	view->setPage(page);
+
+	views << view;
+
+	return view;
+}
+
+QWebEngineView *MainWindow::lookupWebView(int index)
+{
+	if (index >= 0 && index < views.size())
+		return views[index];
+
+	return Q_NULLPTR;
+}
+
+QWebEngineView *MainWindow::lookupVisibleWebView()
+{
+	for (int i=0; i<views.size(); i++)
+		if (views[i]->isVisible())
+			return views[i];
+
+	return Q_NULLPTR;
+}
+

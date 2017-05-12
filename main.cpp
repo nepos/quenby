@@ -25,7 +25,9 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+	qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+
+	QApplication app(argc, argv);
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Simple kiosk browser");
