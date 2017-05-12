@@ -50,6 +50,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
 
 	layout->addWidget(browserWidget);
 	layout->addWidget(quickWidget);
+	layout->setSpacing(0);
+	layout->setMargin(0);
 
 	inputPanel = quickWidget->rootObject();
 	if (inputPanel)
