@@ -51,3 +51,7 @@ void ControlInterface::setWebViewVisible(int index, bool visible)
 void ControlInterface::setWebViewTransparentBackground(int index, bool transparent) {
 	emit onWebViewTransparentBackgroundChangeRequested(index, transparent);
 }
+
+void ControlInterface::takeScreenShot() {
+    emit onScreenShotRequested();
+}
