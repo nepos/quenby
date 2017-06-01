@@ -42,19 +42,19 @@ public:
 
 
 protected:
-	void resizeEvent(QResizeEvent* event);
+    void resizeEvent(QResizeEvent* event);
 
 private slots:
-	void onActiveChanged(bool a);
-	void onWidthChanged(int w);
-	void onHeightChanged(int h);
+    void onActiveChanged(bool a);
+    void onWidthChanged(int w);
+    void onHeightChanged(int h);
 
 private:
-	QWidget *frame;
-	QWidget *browserWidget;
-	QVBoxLayout *layout;
-	QQuickWidget *quickWidget;
-	QObject *inputPanel;
+    QWidget *frame;
+    QWidget *browserWidget;
+    QVBoxLayout *layout;
+    QQuickWidget *quickWidget;
+    QObject *inputPanel;
 
     void createControlInterface();
     QWebChannel controlChannel;
@@ -64,5 +64,5 @@ private:
 
     QWebEngineView *addWebView();
     QWebEngineView *lookupWebView(int index);
-	QWebEngineView *lookupVisibleWebView();
+    QWebEngineView *lookupVisibleWebView();
 };

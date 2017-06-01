@@ -29,12 +29,12 @@ public:
     explicit ControlInterface(QObject *parent = 0);
 
 public slots:
-	int createWebView();
-	void destroyWebView(int index);
-	void setWebViewUrl(int index, const QString &url);
-	void setWebViewGeometry(int index, int x, int y, int w, int h);
-	void setWebViewVisible(int index, bool visible);
-	void setWebViewTransparentBackground(int index, bool transparent);
+    int createWebView();
+    void destroyWebView(int index);
+    void setWebViewUrl(int index, const QString &url);
+    void setWebViewGeometry(int index, int x, int y, int w, int h);
+    void setWebViewVisible(int index, bool visible);
+    void setWebViewTransparentBackground(int index, bool transparent);
     void takeScreenShot();
 
 signals:

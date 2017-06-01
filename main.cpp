@@ -25,9 +25,9 @@
 
 int main(int argc, char *argv[])
 {
-	qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
 
-	QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Simple kiosk browser");
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
                                         "Fullscreen display [default: off].");
     parser.addOption(fullscreenOption);
 
-	QCommandLineOption defaultViewUrlOption(QStringList() <<
+    QCommandLineOption defaultViewUrlOption(QStringList() <<
                                             "u" << "url",
                                             "Default view URL [default: http://localhost:3000/].",
                                             QStringLiteral("url"), QStringLiteral("http://localhost:3000/"));

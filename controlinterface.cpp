@@ -25,31 +25,31 @@ ControlInterface::ControlInterface(QObject *parent) : QObject(parent)
 
 int ControlInterface::createWebView()
 {
-	return emit onCreateWebViewRequested();
+    return emit onCreateWebViewRequested();
 }
 
 void ControlInterface::destroyWebView(int index)
 {
-	emit onDestroyWebViewRequested(index);
+    emit onDestroyWebViewRequested(index);
 }
 
 void ControlInterface::setWebViewUrl(int index, const QString &url)
 {
-	emit onWebViewURLChangeRequested(index, url);
+    emit onWebViewURLChangeRequested(index, url);
 }
 
 void ControlInterface::setWebViewGeometry(int index, int x, int y, int w, int h)
 {
-	emit onWebViewGeometryChangeRequested(index, x, y, w, h);
+    emit onWebViewGeometryChangeRequested(index, x, y, w, h);
 }
 
 void ControlInterface::setWebViewVisible(int index, bool visible)
 {
-	emit onWebViewVisibleChangeRequested(index, visible);
+    emit onWebViewVisibleChangeRequested(index, visible);
 }
 
 void ControlInterface::setWebViewTransparentBackground(int index, bool transparent) {
-	emit onWebViewTransparentBackgroundChangeRequested(index, transparent);
+    emit onWebViewTransparentBackgroundChangeRequested(index, transparent);
 }
 
 void ControlInterface::takeScreenShot() {
