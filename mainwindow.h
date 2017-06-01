@@ -22,6 +22,7 @@
 #include <QMainWindow>
 #include <QList>
 #include <QWebChannel>
+#include <QUrl>
 #include <QtWebSockets/QWebSocketServer>
 
 #include "controlinterface.h"

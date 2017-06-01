@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     qputenv("QTWEBENGINE_REMOTE_DEBUGGING", parser.value(debugPortOption).toUtf8());
 #endif
 
-    MainWindow w(parser.value(defaultViewUrlOption),
+    MainWindow w(QUrl(parser.value(defaultViewUrlOption)),
                  parser.value(widthOption).toInt(),
                  parser.value(heightOption).toInt());
 
