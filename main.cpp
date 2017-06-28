@@ -26,6 +26,7 @@
 int main(int argc, char *argv[])
 {
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+    qputenv("QT_VIRTUALKEYBOARD_STYLE", QByteArray("nepos"));
 
     QApplication app(argc, argv);
 
