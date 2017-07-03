@@ -24,6 +24,8 @@
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QTemporaryFile>
+#include <QTimer>
+#include <QWaylandOutput>
 
 #include "mainwindow.h"
 #include "webenginepage.h"
@@ -84,6 +86,16 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
 
     QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
         setWindowTitle(title);
+    });
+
+    QTimer::singleShot(5000, [this]() {
+        QWaylandOutput *qwo = new QWaylandOutput();
+        qwo->setTransform(QWaylandOutput::Transform90);
+
+        QTimer::singleShot(5000, [this]() {
+            QWaylandOutput *qwo = new QWaylandOutput();
+            qwo->setTransform(QWaylandOutput::Transform270);
+        });
     });
 }
 

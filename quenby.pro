@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui network webenginewidgets webchannel quickwidgets
+QT += core gui network webenginewidgets webchannel quickwidgets waylandcompositor
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
