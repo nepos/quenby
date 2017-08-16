@@ -1,6 +1,6 @@
 #include "webenginepage.h"
 
-WebEnginePage::WebEnginePage(QObject *parent = Q_NULLPTR) :
+WebEnginePage::WebEnginePage(QObject *parent) :
     QWebEnginePage(parent)
 {}
 
