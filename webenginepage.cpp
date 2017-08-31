@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "webenginepage.h"
 
 WebEnginePage::WebEnginePage(QObject *parent) :
