@@ -57,6 +57,20 @@ int main(int argc, char *argv[])
                                             QStringLiteral("url"), QStringLiteral("http://localhost:3000/"));
     parser.addOption(defaultViewUrlOption);
 
+    // These options are read by the Qt/Chromium glue layer by parsing the command line of the current process.
+    // quenby silently accepts them if passed, but doesn't actually do anything with it.
+    QCommandLineOption enableLoggingOption(QStringList() <<
+                                           "x" << "enable-logging",
+                                           "Enable Chromium debug logging",
+                                           QStringLiteral("enable-logging"));
+    parser.addOption(enableLoggingOption);
+
+    QCommandLineOption logLevelOption(QStringList() <<
+                                      "y" << "log-level",
+                                      "Set Chromium log level",
+                                      QStringLiteral("log-level"));
+    parser.addOption(logLevelOption);
+
 #ifdef QT_DEBUG
     QCommandLineOption debugPortOption(QStringList() <<
                                        "d" << "debug",
