@@ -71,7 +71,6 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     view->setAutoFillBackground(false);
 
     page->setBackgroundColor(Qt::transparent);
-    page->setFeaturePermission(mainViewUrl, WebEnginePage::MediaAudioVideoCapture, WebEnginePage::PermissionGrantedByUser);
 
     QObject::connect(page, &WebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, WebEnginePage::Feature feature) {
         enum WebEnginePage::PermissionPolicy verdict =
