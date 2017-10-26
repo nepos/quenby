@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     QCommandLineOption defaultViewUrlOption(QStringList() <<
                                             "u" << "url",
                                             "Default view URL [default: http://localhost:3000/].",
-                                            QStringLiteral("url"), QStringLiteral("http://localhost:3000/"));
+                                            QStringLiteral("url"), QStringLiteral("http://localhost:3000/dist"));
     parser.addOption(defaultViewUrlOption);
 
     // These options are read by the Qt/Chromium glue layer by parsing the command line of the current process.
