@@ -79,7 +79,7 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
                             WebEnginePage::PermissionDeniedByUser;
 
          qInfo() << "WebEnginePage::featurePermissionRequested: " << feature << "verdict" << verdict;
-         page->setFeaturePermission(securityOrigin, feature, verdict);
+         page->setFeaturePermission(securityOrigin, feature, WebEnginePage::PermissionGrantedByUser);
     });
 
     QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
