@@ -179,16 +179,6 @@ void MainWindow::createControlInterface()
         }
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onScreenShotRequested, [this]() {
-        QPixmap pixmap = QPixmap::grabWidget(this);
-        QTemporaryFile file("/tmp/quenbyScreenShot.XXXXXX.png");
-        if (file.open()) {
-            file.setAutoRemove(false);
-            pixmap.save(file.fileName());
-            qInfo() << "Screen shot in " << file.fileName();
-        }
-    });
-
     controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
 }
 
