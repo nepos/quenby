@@ -35,7 +35,6 @@ public slots:
     void setWebViewGeometry(int index, int x, int y, int w, int h);
     void setWebViewVisible(int index, bool visible);
     void setWebViewTransparentBackground(int index, bool transparent);
-    void takeScreenShot();
 
 signals:
     // App → Server
@@ -44,7 +43,6 @@ signals:
     void onWebViewGeometryChangeRequested(int index, int x, int y, int w, int h);
     void onWebViewVisibleChangeRequested(int index, bool value);
     void onWebViewTransparentBackgroundChangeRequested(int index, bool value);
-    void onScreenShotRequested();
 
     // App ←/→ Server
     void onWebViewURLChanged(int index, const QString &value);

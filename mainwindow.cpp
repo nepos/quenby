@@ -73,7 +73,6 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     view->setAutoFillBackground(false);
 
     page->setBackgroundColor(Qt::transparent);
-    page->setFeaturePermission(mainViewUrl, WebEnginePage::MediaAudioVideoCapture, WebEnginePage::PermissionGrantedByUser);
 
     QObject::connect(page, &WebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, WebEnginePage::Feature feature) {
         enum WebEnginePage::PermissionPolicy verdict =
@@ -81,7 +80,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
                             WebEnginePage::PermissionGrantedByUser :
                             WebEnginePage::PermissionDeniedByUser;
 
-                page->setFeaturePermission(securityOrigin, feature, verdict);
+         qInfo() << "WebEnginePage::featurePermissionRequested: " << feature << "verdict" << verdict;
+         page->setFeaturePermission(securityOrigin, feature, WebEnginePage::PermissionGrantedByUser);
     });
 
     QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
@@ -188,16 +188,6 @@ void MainWindow::createControlInterface()
                 view->setAutoFillBackground(true);
                 view->page()->setBackgroundColor(Qt::white);
             }
-        }
-    });
-
-    QObject::connect(&controlInterface, &ControlInterface::onScreenShotRequested, [this]() {
-        QPixmap pixmap = QPixmap::grabWidget(this);
-        QTemporaryFile file("/tmp/quenbyScreenShot.XXXXXX.png");
-        if (file.open()) {
-            file.setAutoRemove(false);
-            pixmap.save(file.fileName());
-            qInfo() << "Screen shot in " << file.fileName();
         }
     });
 
