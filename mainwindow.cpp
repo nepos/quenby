@@ -25,7 +25,6 @@
 #include <QApplication>
 #include <QTemporaryFile>
 #include <QTimer>
-#include <QWaylandOutput>
 
 #include "mainwindow.h"
 #include "webenginepage.h"
@@ -88,15 +87,6 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
         setWindowTitle(title);
     });
 
-    QTimer::singleShot(5000, [this]() {
-        QWaylandOutput *qwo = new QWaylandOutput();
-        qwo->setTransform(QWaylandOutput::Transform90);
-
-        QTimer::singleShot(5000, [this]() {
-            QWaylandOutput *qwo = new QWaylandOutput();
-            qwo->setTransform(QWaylandOutput::Transform270);
-        });
-    });
 }
 
 MainWindow::~MainWindow()
