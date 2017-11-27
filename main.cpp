@@ -71,19 +71,15 @@ int main(int argc, char *argv[])
                                       QStringLiteral("log-level"));
     parser.addOption(logLevelOption);
 
-#ifdef QT_DEBUG
     QCommandLineOption debugPortOption(QStringList() <<
                                        "d" << "debug",
                                        "WebEngine debug port [default: 3002].",
                                        QStringLiteral("debug"), QStringLiteral("3002"));
     parser.addOption(debugPortOption);
-#endif
 
     parser.process(app);
 
-#ifdef QT_DEBUG
     qputenv("QTWEBENGINE_REMOTE_DEBUGGING", parser.value(debugPortOption).toUtf8());
-#endif
 
     MainWindow w(QUrl(parser.value(defaultViewUrlOption)),
                  parser.value(widthOption).toInt(),
