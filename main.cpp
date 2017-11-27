@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
     parser.addOption(logLevelOption);
 
     QCommandLineOption debugPortOption(QStringList() <<
-                                       "d" << "debug",
+                                       "p" << "remote-debug-port",
                                        "WebEngine debug port [default: 3002].",
-                                       QStringLiteral("debug"), QStringLiteral("3002"));
+                                       QStringLiteral("remote-debug-port"), QStringLiteral("3002"));
     parser.addOption(debugPortOption);
 
     parser.process(app);
