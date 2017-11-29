@@ -9,17 +9,17 @@ open new widgets, make them load arbitrary URLs, receive callback if their URLs 
 
 # Usage
 ```
-$ ./kiosk-browser-qt --help
-Usage: ./kiosk-browser-qt [options]
+$ ./quenby --help
+Usage: ./quenby [options]
 Simple kiosk browser
 
 Options:
-  -h, --help        Displays this help.
-  -w, --width       Main web view width [default: 1280].
-  -i, --height      Main web view height [default: 800].
-  -f, --fullscreen  Fullscreen display [default: off].
-  -u, --url         Default view URL [default: http://localhost:3000/].
-  -d, --debug       WebEngine debug port [default: 3002].
+  -h, --help               Displays this help.
+  -w, --width              Main web view width [default: 1280].
+  -i, --height             Main web view height [default: 800].
+  -f, --fullscreen         Fullscreen display [default: off].
+  -u, --url                Default view URL [default: http://localhost:3000/dist].
+  -r, --remote-debug-port  WebEngine debug port [default: 3002].
 ```
 
 # The Javascript interface

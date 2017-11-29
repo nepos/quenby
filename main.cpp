@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 
     QCommandLineOption defaultViewUrlOption(QStringList() <<
                                             "u" << "url",
-                                            "Default view URL [default: http://localhost:3000/].",
+                                            "Default view URL [default: http://localhost:3000/dist].",
                                             QStringLiteral("url"), QStringLiteral("http://localhost:3000/dist"));
     parser.addOption(defaultViewUrlOption);
 
