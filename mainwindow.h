@@ -55,7 +55,7 @@ private:
     QQuickWidget *quickWidget;
     QObject *inputPanel;
 
-    void createControlInterface(int key, QWebEngineView *view);
+    void createControlInterface();
     int nextKey();
 
     QWebChannel controlChannel;

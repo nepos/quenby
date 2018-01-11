@@ -66,12 +66,13 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     auto key = nextKey();
     auto *view = addWebView(key);
     auto *page = view->page();
+    page->setBackgroundColor(Qt::transparent);
     view->page()->setWebChannel(&controlChannel);
     view->setUrl(mainViewUrl);
     view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
     view->setAutoFillBackground(false);
 
-    createControlInterface(key, view);
+    createControlInterface();
 
     QObject::connect(page, &WebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, WebEnginePage::Feature feature) {
         enum WebEnginePage::PermissionPolicy verdict =
@@ -121,9 +122,11 @@ void MainWindow::onHeightChanged(int h)
     qDebug() << __PRETTY_FUNCTION__ << " :" << h;
 }
 
-void MainWindow::createControlInterface(int key, QWebEngineView *view)
+void MainWindow::createControlInterface()
 {
-    QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this, key, view]() {
+    QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this]() {
+        auto key = nextKey();
+        QWebEngineView *view = addWebView(key);
 
         QObject::connect(view, &QWebEngineView::urlChanged, [this, key](const QUrl &url) {
             emit controlInterface.onWebViewURLChanged(key, url.url());
@@ -139,6 +142,7 @@ void MainWindow::createControlInterface(int key, QWebEngineView *view)
 
         return key;
     });
+
 
     QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int key) {
         QWebEngineView *view = lookupWebView(key);
@@ -210,10 +214,10 @@ int MainWindow::nextKey()
 QWebEngineView *MainWindow::addWebView(int key)
 {
     QWebEngineView *view = new QWebEngineView(browserWidget);
-
-    //view->setAutoFillBackground(true);
+    view->setAutoFillBackground(true);
 
     WebEnginePage *page = new WebEnginePage(QWebEngineProfile::defaultProfile(), view);
+    page->setBackgroundColor(Qt::transparent);
     view->setPage(page);
 
     views.insert(key, view);
