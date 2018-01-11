@@ -141,7 +141,7 @@ void MainWindow::createControlInterface()
         return key;
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](uint64_t key) {
+    QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int key) {
         QWebEngineView *view = lookupWebView(key);
         if (view) {
             view->setVisible(false);
@@ -150,25 +150,25 @@ void MainWindow::createControlInterface()
         }
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewURLChangeRequested, [this](uint64_t key, const QString &url) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewURLChangeRequested, [this](int key, const QString &url) {
         QWebEngineView *view = lookupWebView(key);
         if (view)
             view->setUrl(QUrl(url));
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequested, [this](uint64_t key, int x, int y, int w, int h) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequested, [this](int key, int x, int y, int w, int h) {
         QWebEngineView *view = lookupWebView(key);
         if (view)
             view->setGeometry(x, y, w, h);
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequested, [this](uint64_t key, bool value) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequested, [this](int key, bool value) {
         QWebEngineView *view = lookupWebView(key);
         if (view)
             view->setVisible(value);
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequested, [this](uint64_t key, bool value) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequested, [this](int key, bool value) {
 
         QWebEngineView *view = lookupWebView(key);
         if (view) {
@@ -182,7 +182,7 @@ void MainWindow::createControlInterface()
         }
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackUnder, [this](uint64_t topKey, uint64_t underKey) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackUnder, [this](int topKey, int underKey) {
 
         auto wTop = lookupWebView(topKey);
         auto wUnder = lookupWebView(underKey);
@@ -190,7 +190,7 @@ void MainWindow::createControlInterface()
             wTop->stackUnder(wUnder);
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackOnTop, [this](uint64_t key) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackOnTop, [this](int key) {
 
         auto w = lookupWebView(key);
         if (w)
@@ -201,14 +201,14 @@ void MainWindow::createControlInterface()
     controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
 }
 
-uint64_t MainWindow::nextKey()
+int MainWindow::nextKey()
 {
-    static uint64_t nextKey = 0;
+    static int nextKey = 0;
     return nextKey++;
 }
 
 
-QWebEngineView *MainWindow::addWebView(uint64_t key)
+QWebEngineView *MainWindow::addWebView(int key)
 {
     QWebEngineView *view = new QWebEngineView(browserWidget);
 
@@ -222,7 +222,7 @@ QWebEngineView *MainWindow::addWebView(uint64_t key)
     return view;
 }
 
-QWebEngineView *MainWindow::lookupWebView(uint64_t key)
+QWebEngineView *MainWindow::lookupWebView(int key)
 {
     if (views.contains(key))
         return views.value(key);

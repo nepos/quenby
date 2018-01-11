@@ -56,14 +56,14 @@ private:
     QObject *inputPanel;
 
     void createControlInterface();
-    uint64_t nextKey();
+    int nextKey();
 
     QWebChannel controlChannel;
     ControlInterface controlInterface;
 
-    QHash<uint64_t, QWebEngineView*> views;
+    QHash<int, QWebEngineView*> views;
 
-    QWebEngineView *addWebView(uint64_t key);
-    QWebEngineView *lookupWebView(uint64_t key);
+    QWebEngineView *addWebView(int key);
+    QWebEngineView *lookupWebView(int key);
     QWebEngineView *lookupVisibleWebView();
 };

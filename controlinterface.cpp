@@ -23,42 +23,42 @@ ControlInterface::ControlInterface(QObject *parent) : QObject(parent)
 {
 }
 
-uint64_t ControlInterface::createWebView()
+int ControlInterface::createWebView()
 {
     return emit onCreateWebViewRequested();
 }
 
-void ControlInterface::destroyWebView(uint64_t key)
+void ControlInterface::destroyWebView(int key)
 {
     emit onDestroyWebViewRequested(key);
 }
 
-void ControlInterface::setWebViewUrl(uint64_t key, const QString &url)
+void ControlInterface::setWebViewUrl(int key, const QString &url)
 {
     emit onWebViewURLChangeRequested(key, url);
 }
 
-void ControlInterface::setWebViewGeometry(uint64_t key, int x, int y, int w, int h)
+void ControlInterface::setWebViewGeometry(int key, int x, int y, int w, int h)
 {
     emit onWebViewGeometryChangeRequested(key, x, y, w, h);
 }
 
-void ControlInterface::setWebViewVisible(uint64_t key, bool visible)
+void ControlInterface::setWebViewVisible(int key, bool visible)
 {
     emit onWebViewVisibleChangeRequested(key, visible);
 }
 
-void ControlInterface::setWebViewTransparentBackground(uint64_t key, bool transparent)
+void ControlInterface::setWebViewTransparentBackground(int key, bool transparent)
 {
     emit onWebViewTransparentBackgroundChangeRequested(key, transparent);
 }
 
-void ControlInterface::stackUnder(uint64_t topKey, uint64_t underKey)
+void ControlInterface::stackUnder(int topKey, int underKey)
 {
     emit onWebViewStackUnder(topKey, underKey);
 }
 
-void ControlInterface::stackOnTop(uint64_t key)
+void ControlInterface::stackOnTop(int key)
 {
     emit onWebViewStackOnTop(key);
 }

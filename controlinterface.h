@@ -28,31 +28,31 @@ class ControlInterface : public QObject
 public:
     explicit ControlInterface(QObject *parent = 0);
 
-public:
-    uint64_t createWebView();
-    void destroyWebView(uint64_t key);
-    void setWebViewUrl(uint64_t key, const QString &url);
-    void setWebViewGeometry(uint64_t key, int x, int y, int w, int h);
-    void setWebViewVisible(uint64_t key, bool visible);
-    void setWebViewTransparentBackground(uint64_t key, bool transparent);
-    void stackUnder(uint64_t topKey, uint64_t underKey);
-    void stackOnTop(uint64_t key);
+public slots:
+    int createWebView();
+    void destroyWebView(int key);
+    void setWebViewUrl(int key, const QString &url);
+    void setWebViewGeometry(int key, int x, int y, int w, int h);
+    void setWebViewVisible(int key, bool visible);
+    void setWebViewTransparentBackground(int key, bool transparent);
+    void stackUnder(int topKey, int underKey);
+    void stackOnTop(int key);
 
 signals:
     // App → Server
-    uint64_t onCreateWebViewRequested();
-    void onDestroyWebViewRequested(uint64_t key);
-    void onWebViewGeometryChangeRequested(uint64_t key, int x, int y, int w, int h);
-    void onWebViewVisibleChangeRequested(uint64_t key, bool value);
-    void onWebViewTransparentBackgroundChangeRequested(uint64_t key, bool value);
-    void onWebViewStackUnder(uint64_t topKey, uint64_t underKey);
-    void onWebViewStackOnTop(uint64_t key);
+    int onCreateWebViewRequested();
+    void onDestroyWebViewRequested(int key);
+    void onWebViewGeometryChangeRequested(int key, int x, int y, int w, int h);
+    void onWebViewVisibleChangeRequested(int key, bool value);
+    void onWebViewTransparentBackgroundChangeRequested(int key, bool value);
+    void onWebViewStackUnder(int topKey, int underKey);
+    void onWebViewStackOnTop(int key);
 
     // App ←/→ Server
-    void onWebViewURLChanged(uint64_t key, const QString &value);
-    void onWebViewURLChangeRequested(uint64_t key, const QString &value);
+    void onWebViewURLChanged(int key, const QString &value);
+    void onWebViewURLChangeRequested(int key, const QString &value);
 
     // Server → App
-    void onWebViewTitleChanged(uint64_t key, const QString &value);
-    void onWebViewLoadProgressChanged(uint64_t key, int value);
+    void onWebViewTitleChanged(int key, const QString &value);
+    void onWebViewLoadProgressChanged(int key, int value);
 };
