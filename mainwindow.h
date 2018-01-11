@@ -28,7 +28,6 @@
 
 class QWidget;
 class QVBoxLayout;
-class QStackedLayout;
 class QQuickWidget;
 class QWebEngineView;
 
@@ -53,7 +52,6 @@ private:
     QWidget *frame;
     QWidget *browserWidget;
     QVBoxLayout *windowLayout;
-    QStackedLayout *browserLayout;
     QQuickWidget *quickWidget;
     QObject *inputPanel;
 
