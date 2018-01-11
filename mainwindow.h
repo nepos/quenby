@@ -20,7 +20,7 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QList>
+#include <QHash>
 #include <QWebChannel>
 #include <QUrl>
 
@@ -28,6 +28,7 @@
 
 class QWidget;
 class QVBoxLayout;
+class QStackedLayout;
 class QQuickWidget;
 class QWebEngineView;
 
@@ -51,17 +52,20 @@ private slots:
 private:
     QWidget *frame;
     QWidget *browserWidget;
-    QVBoxLayout *layout;
+    QVBoxLayout *windowLayout;
+    QStackedLayout *browserLayout;
     QQuickWidget *quickWidget;
     QObject *inputPanel;
 
     void createControlInterface();
+    int nextKey();
+
     QWebChannel controlChannel;
     ControlInterface controlInterface;
 
-    QList<QWebEngineView*> views;
+    QHash<uint64_t, QWebEngineView*> views;
 
-    QWebEngineView *addWebView();
-    QWebEngineView *lookupWebView(int index);
+    QWebEngineView *addWebView(uint64_t key);
+    QWebEngineView *lookupWebView(uint64_t key);
     QWebEngineView *lookupVisibleWebView();
 };
