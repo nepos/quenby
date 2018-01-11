@@ -56,7 +56,7 @@ private:
     QObject *inputPanel;
 
     void createControlInterface();
-    int nextKey();
+    uint64_t nextKey();
 
     QWebChannel controlChannel;
     ControlInterface controlInterface;

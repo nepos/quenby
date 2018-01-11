@@ -29,7 +29,7 @@ public:
     explicit ControlInterface(QObject *parent = 0);
 
 public:
-    int createWebView();
+    uint64_t createWebView();
     void destroyWebView(uint64_t key);
     void setWebViewUrl(uint64_t key, const QString &url);
     void setWebViewGeometry(uint64_t key, int x, int y, int w, int h);
@@ -40,7 +40,7 @@ public:
 
 signals:
     // App → Server
-    int onCreateWebViewRequested();
+    uint64_t onCreateWebViewRequested();
     void onDestroyWebViewRequested(uint64_t key);
     void onWebViewGeometryChangeRequested(uint64_t key, int x, int y, int w, int h);
     void onWebViewVisibleChangeRequested(uint64_t key, bool value);

@@ -23,9 +23,9 @@ ControlInterface::ControlInterface(QObject *parent) : QObject(parent)
 {
 }
 
-int ControlInterface::createWebView()
+uint64_t ControlInterface::createWebView()
 {
-    return onCreateWebViewRequested();
+    return emit onCreateWebViewRequested();
 }
 
 void ControlInterface::destroyWebView(uint64_t key)

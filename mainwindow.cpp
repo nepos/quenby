@@ -201,7 +201,7 @@ void MainWindow::createControlInterface()
     controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
 }
 
-int MainWindow::nextKey()
+uint64_t MainWindow::nextKey()
 {
     static uint64_t nextKey = 0;
     return nextKey++;
