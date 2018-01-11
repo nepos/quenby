@@ -62,7 +62,6 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     connect(inputPanel, SIGNAL(activated(bool)), this, SLOT(onActiveChanged(bool)));
     connect(inputPanel, SIGNAL(heightChanged(int)), this, SLOT(onHeightChanged(int)));
 
-    createControlInterface();
 
     auto key = nextKey();
     auto *view = addWebView(key);
@@ -71,6 +70,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     view->setUrl(mainViewUrl);
     view->setGeometry(0, 0, mainViewWidth, mainViewHeight);
     view->setAutoFillBackground(false);
+
+    createControlInterface(key, view);
 
     QObject::connect(page, &WebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, WebEnginePage::Feature feature) {
         enum WebEnginePage::PermissionPolicy verdict =
@@ -120,11 +121,9 @@ void MainWindow::onHeightChanged(int h)
     qDebug() << __PRETTY_FUNCTION__ << " :" << h;
 }
 
-void MainWindow::createControlInterface()
+void MainWindow::createControlInterface(int key, QWebEngineView *view)
 {
-    QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this]() {
-        auto key = nextKey();
-        QWebEngineView *view = addWebView(key);
+    QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this, key, view]() {
 
         QObject::connect(view, &QWebEngineView::urlChanged, [this, key](const QUrl &url) {
             emit controlInterface.onWebViewURLChanged(key, url.url());
@@ -212,7 +211,7 @@ QWebEngineView *MainWindow::addWebView(int key)
 {
     QWebEngineView *view = new QWebEngineView(browserWidget);
 
-    view->setAutoFillBackground(true);
+    //view->setAutoFillBackground(true);
 
     WebEnginePage *page = new WebEnginePage(QWebEngineProfile::defaultProfile(), view);
     view->setPage(page);
