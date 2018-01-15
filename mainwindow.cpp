@@ -239,6 +239,7 @@ QWebEngineView *MainWindow::addWebView(int key)
 {
     QWebEngineView *view = new QWebEngineView(browserWidget);
     view->setAutoFillBackground(true);
+    view->setContextMenuPolicy(Qt::NoContextMenu);
 
     WebEnginePage *page = new WebEnginePage(QWebEngineProfile::defaultProfile(), view);
     page->setBackgroundColor(Qt::transparent);
