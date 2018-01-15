@@ -19,6 +19,7 @@
 
 #include <QWebEngineProfile>
 #include <QWebEngineView>
+#include <QWebEngineHistory>
 #include <QQuickItem>
 #include <QQuickWidget>
 #include <QVBoxLayout>
@@ -59,9 +60,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     if (inputPanel)
         inputPanel->setProperty("width", size().width());
 
-    connect(inputPanel, SIGNAL(activated(bool)), this, SLOT(onActiveChanged(bool)));
-    connect(inputPanel, SIGNAL(heightChanged(int)), this, SLOT(onHeightChanged(int)));
-
+    connect(inputPanel, SIGNAL(activated(bool)), this, SLOT(onKeyboardActiveChanged(bool)));
+    connect(inputPanel, SIGNAL(heightChanged(int)), this, SLOT(onKeyboardHeightChanged(int)));
 
     auto key = nextKey();
     auto *view = addWebView(key);
@@ -103,23 +103,16 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         inputPanel->setProperty("width", event->size().width());
 }
 
-void MainWindow::onActiveChanged(bool a)
+void MainWindow::onKeyboardActiveChanged(bool a)
 {
     quickWidget->setVisible(a);
 }
 
-void MainWindow::onWidthChanged(int w)
-{
-    qDebug() << __PRETTY_FUNCTION__ << " :" << w;
-}
-
-void MainWindow::onHeightChanged(int h)
+void MainWindow::onKeyboardHeightChanged(int h)
 {
     auto newSize = quickWidget->size();
     newSize.setHeight(h);
     quickWidget->resize(newSize);
-
-    qDebug() << __PRETTY_FUNCTION__ << " :" << h;
 }
 
 void MainWindow::createControlInterface()
@@ -132,6 +125,10 @@ void MainWindow::createControlInterface()
             emit controlInterface.onWebViewURLChanged(key, url.url());
         });
 
+        QObject::connect(view, &QWebEngineView::urlChanged, [this, key](const QUrl &url) {
+            emit controlInterface.onWebViewHostnameChanged(key, url.host());
+        });
+
         QObject::connect(view, &QWebEngineView::titleChanged, [this, key](const QString &title) {
             emit controlInterface.onWebViewTitleChanged(key, title);
         });
@@ -142,7 +139,6 @@ void MainWindow::createControlInterface()
 
         return key;
     });
-
 
     QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int key) {
         QWebEngineView *view = lookupWebView(key);
@@ -185,7 +181,28 @@ void MainWindow::createControlInterface()
         }
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackUnder, [this](int topKey, int underKey) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewNextRequested, [this](int key){
+        QWebEngineView *view = lookupWebView(key);
+        if (view) {
+            view->forward();
+        }
+    });
+
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewPrevRequested, [this](int key){
+        QWebEngineView *view = lookupWebView(key);
+        if (view) {
+            view->back();
+        }
+    });
+
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewHistoryRequested, [this](int key){
+        QWebEngineView *view = lookupWebView(key);
+        if (view) {
+            emit controlInterface.onWebViewHistroyRequested(*view->page()->history());
+        }
+    });
+
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackUnderRequested, [this](int topKey, int underKey) {
 
         auto wTop = lookupWebView(topKey);
         auto wUnder = lookupWebView(underKey);
@@ -193,13 +210,20 @@ void MainWindow::createControlInterface()
             wTop->stackUnder(wUnder);
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackOnTop, [this](int key) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackOnTopRequested, [this](int key) {
 
         auto w = lookupWebView(key);
         if (w)
             w->raise();
     });
 
+    QObject::connect(&controlInterface, &ControlInterface::onKeyboardShowRequested, [this](void) {
+        onKeyboardActiveChanged(true);
+    });
+
+    QObject::connect(&controlInterface, &ControlInterface::onKeyboardHideRequested, [this](void) {
+        onKeyboardActiveChanged(false);
+    });
 
     controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
 }

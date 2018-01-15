@@ -53,12 +53,37 @@ void ControlInterface::setWebViewTransparentBackground(int key, bool transparent
     emit onWebViewTransparentBackgroundChangeRequested(key, transparent);
 }
 
-void ControlInterface::stackUnder(int topKey, int underKey)
+void ControlInterface::setWebViewNext(int key)
 {
-    emit onWebViewStackUnder(topKey, underKey);
+    emit onWebViewNextRequested(key);
 }
 
-void ControlInterface::stackOnTop(int key)
+void ControlInterface::setWebViewPrev(int key)
 {
-    emit onWebViewStackOnTop(key);
+    emit onWebViewPrevRequested(key);
+}
+
+void ControlInterface::getWebViewHistory(int key)
+{
+    emit onWebViewHistoryRequested(key);
+}
+
+void ControlInterface::setWebViewStackUnder(int topKey, int underKey)
+{
+    emit onWebViewStackUnderRequested(topKey, underKey);
+}
+
+void ControlInterface::setWebViewStackOnTop(int key)
+{
+    emit onWebViewStackOnTopRequested(key);
+}
+
+void ControlInterface::showKeyboard(void)
+{
+    emit onKeyboardShowRequested();
+}
+
+void ControlInterface::hideKeyboard(void)
+{
+    emit onKeyboardHideRequested();
 }

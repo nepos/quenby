@@ -21,6 +21,8 @@
 
 #include <QObject>
 
+class QWebEngineHistory;
+
 class ControlInterface : public QObject
 {
     Q_OBJECT
@@ -35,8 +37,15 @@ public slots:
     void setWebViewGeometry(int key, int x, int y, int w, int h);
     void setWebViewVisible(int key, bool visible);
     void setWebViewTransparentBackground(int key, bool transparent);
-    void stackUnder(int topKey, int underKey);
-    void stackOnTop(int key);
+    void setWebViewNext(int key);
+    void setWebViewPrev(int key);
+    void setWebViewStackUnder(int topKey, int underKey);
+    void setWebViewStackOnTop(int key);
+    void getWebViewHistory(int key);
+
+    void showKeyboard(void);
+    void hideKeyboard(void);
+
 
 signals:
     // App → Server
@@ -45,14 +54,26 @@ signals:
     void onWebViewGeometryChangeRequested(int key, int x, int y, int w, int h);
     void onWebViewVisibleChangeRequested(int key, bool value);
     void onWebViewTransparentBackgroundChangeRequested(int key, bool value);
-    void onWebViewStackUnder(int topKey, int underKey);
-    void onWebViewStackOnTop(int key);
+    void onWebViewStackUnderRequested(int topKey, int underKey);
+    void onWebViewStackOnTopRequested(int key);
+    void onWebViewNextRequested(int key);
+    void onWebViewPrevRequested(int key);
+    void onWebViewHistoryRequested(int key);
+    void onWebViewHistroyRequested(const QWebEngineHistory&);
+    void onKeyboardShowRequested(void);
+    void onKeyboardHideRequested(void);
 
     // App ←/→ Server
     void onWebViewURLChanged(int key, const QString &value);
+    void onWebViewHostnameChanged(int key, const QString &value);
     void onWebViewURLChangeRequested(int key, const QString &value);
 
     // Server → App
     void onWebViewTitleChanged(int key, const QString &value);
     void onWebViewLoadProgressChanged(int key, int value);
+
+
+
+
+
 };

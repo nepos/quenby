@@ -43,10 +43,10 @@ public:
 protected:
     void resizeEvent(QResizeEvent* event);
 
+
 private slots:
-    void onActiveChanged(bool a);
-    void onWidthChanged(int w);
-    void onHeightChanged(int h);
+    void onKeyboardActiveChanged(bool a);
+    void onKeyboardHeightChanged(int h);
 
 private:
     QWidget *frame;
