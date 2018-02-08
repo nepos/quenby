@@ -140,6 +140,35 @@ void MainWindow::createControlInterface()
         return key;
     });
 
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewForwardHistoryRequestedL, [this](int key){
+        QWebEngineView *view = lookupWebView(key);
+        if (view) {
+            QStringList pages;
+
+            auto items = view->page()->history()->forwardItems(1000);
+            foreach (auto item, items) {
+                pages << item.url().toString();
+            }
+
+            emit controlInterface.onWebViewForwardHistoryRequested(key, pages);
+        }
+    });
+
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewBackwardHistoryRequestedL, [this](int key){
+        QWebEngineView *view = lookupWebView(key);
+        if (view) {
+            QStringList pages;
+
+            auto items = view->page()->history()->backItems(1000);
+            foreach (auto item, items) {
+                pages << item.url().toString();
+            }
+
+            emit controlInterface.onWebViewBackwardHistoryRequested(key, pages);
+        }
+    });
+
+
     QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int key) {
         QWebEngineView *view = lookupWebView(key);
         if (view) {
@@ -192,13 +221,6 @@ void MainWindow::createControlInterface()
         QWebEngineView *view = lookupWebView(key);
         if (view) {
             view->back();
-        }
-    });
-
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewHistoryRequested, [this](int key){
-        QWebEngineView *view = lookupWebView(key);
-        if (view) {
-            emit controlInterface.onWebViewHistroyRequested(*view->page()->history());
         }
     });
 

@@ -63,9 +63,14 @@ void ControlInterface::setWebViewPrev(int key)
     emit onWebViewPrevRequested(key);
 }
 
-void ControlInterface::getWebViewHistory(int key)
+void ControlInterface::getWebViewForwardHistory(int key)
 {
-    emit onWebViewHistoryRequested(key);
+    emit onWebViewForwardHistoryRequestedL(key);
+}
+
+void ControlInterface::getWebViewBackwardHistory(int key)
+{
+    emit onWebViewBackwardHistoryRequestedL(key);
 }
 
 void ControlInterface::setWebViewStackUnder(int topKey, int underKey)

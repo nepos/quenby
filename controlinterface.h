@@ -41,7 +41,8 @@ public slots:
     void setWebViewPrev(int key);
     void setWebViewStackUnder(int topKey, int underKey);
     void setWebViewStackOnTop(int key);
-    void getWebViewHistory(int key);
+    void getWebViewForwardHistory(int key);
+    void getWebViewBackwardHistory(int key);
 
     void showKeyboard(void);
     void hideKeyboard(void);
@@ -58,8 +59,11 @@ signals:
     void onWebViewStackOnTopRequested(int key);
     void onWebViewNextRequested(int key);
     void onWebViewPrevRequested(int key);
-    void onWebViewHistoryRequested(int key);
-    void onWebViewHistroyRequested(const QWebEngineHistory&);
+    void onWebViewForwardHistoryRequestedL(int key);
+    void onWebViewBackwardHistoryRequestedL(int key);
+    void onWebViewForwardHistoryRequested(int key, const QStringList);
+    void onWebViewBackwardHistoryRequested(int key, const QStringList);
+
     void onKeyboardShowRequested(void);
     void onKeyboardHideRequested(void);
 
