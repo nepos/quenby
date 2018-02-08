@@ -16,6 +16,8 @@ bool WebEnginePage::certificateError(const QWebEngineCertificateError &certifica
     qDebug() << certificateError.errorDescription();
     qDebug() << certificateError.url();
 
+    emit onCertificateInvalid();
+
     // Unconditionally ignore error
     return true;
 }

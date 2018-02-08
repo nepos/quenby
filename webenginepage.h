@@ -23,6 +23,8 @@
 
 class WebEnginePage : public QWebEnginePage
 {
+    Q_OBJECT
+
 public:
     explicit WebEnginePage(QObject *parent);
     WebEnginePage(QWebEngineProfile *profile, QObject *parent = Q_NULLPTR);
@@ -30,4 +32,6 @@ public:
 protected:
     virtual bool certificateError(const QWebEngineCertificateError &certificateError);
 
+signals:
+    void onCertificateInvalid();
 };

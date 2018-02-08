@@ -64,6 +64,8 @@ signals:
     void onWebViewForwardHistoryRequested(int key, const QStringList);
     void onWebViewBackwardHistoryRequested(int key, const QStringList);
 
+    void onCertificateInvalid(void);
+
     void onKeyboardShowRequested(void);
     void onKeyboardHideRequested(void);
 
@@ -75,9 +77,4 @@ signals:
     // Server → App
     void onWebViewTitleChanged(int key, const QString &value);
     void onWebViewLoadProgressChanged(int key, int value);
-
-
-
-
-
 };

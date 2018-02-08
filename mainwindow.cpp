@@ -247,6 +247,7 @@ void MainWindow::createControlInterface()
         onKeyboardActiveChanged(false);
     });
 
+
     controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
 }
 
@@ -268,6 +269,8 @@ QWebEngineView *MainWindow::addWebView(int key)
     view->setPage(page);
 
     views.insert(key, view);
+
+    connect(page, SIGNAL(onCertificateInvalid()), &controlInterface, SIGNAL(onCertificateInvalid()));
 
     return view;
 }
