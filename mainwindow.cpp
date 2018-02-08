@@ -106,6 +106,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::onKeyboardActiveChanged(bool a)
 {
     quickWidget->setVisible(a);
+    if (a)
+        emit controlInterface.onKeyboardShown(quickWidget->size().height());
+    else
+        emit controlInterface.onKeyboardHidden();
 }
 
 void MainWindow::onKeyboardHeightChanged(int h)
@@ -117,7 +121,7 @@ void MainWindow::onKeyboardHeightChanged(int h)
 
 void MainWindow::createControlInterface()
 {
-    QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequested, [this]() {
+    QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequest, [this]() {
         auto key = nextKey();
         QWebEngineView *view = addWebView(key);
 
@@ -140,7 +144,7 @@ void MainWindow::createControlInterface()
         return key;
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewForwardHistoryRequestedL, [this](int key){
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewForwardHistoryRequest, [this](int key){
         QWebEngineView *view = lookupWebView(key);
         if (view) {
             QStringList pages;
@@ -154,7 +158,7 @@ void MainWindow::createControlInterface()
         }
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewBackwardHistoryRequestedL, [this](int key){
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewBackwardHistoryRequest, [this](int key){
         QWebEngineView *view = lookupWebView(key);
         if (view) {
             QStringList pages;
@@ -169,7 +173,7 @@ void MainWindow::createControlInterface()
     });
 
 
-    QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequested, [this](int key) {
+    QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequest, [this](int key) {
         QWebEngineView *view = lookupWebView(key);
         if (view) {
             view->setVisible(false);
@@ -184,19 +188,19 @@ void MainWindow::createControlInterface()
             view->setUrl(QUrl(url));
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequested, [this](int key, int x, int y, int w, int h) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewGeometryChangeRequest, [this](int key, int x, int y, int w, int h) {
         QWebEngineView *view = lookupWebView(key);
         if (view)
             view->setGeometry(x, y, w, h);
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequested, [this](int key, bool value) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewVisibleChangeRequest, [this](int key, bool value) {
         QWebEngineView *view = lookupWebView(key);
         if (view)
             view->setVisible(value);
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequested, [this](int key, bool value) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewTransparentBackgroundChangeRequest, [this](int key, bool value) {
 
         QWebEngineView *view = lookupWebView(key);
         if (view) {
@@ -210,21 +214,21 @@ void MainWindow::createControlInterface()
         }
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewNextRequested, [this](int key){
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewNextRequest, [this](int key){
         QWebEngineView *view = lookupWebView(key);
         if (view) {
             view->forward();
         }
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewPrevRequested, [this](int key){
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewPrevRequest, [this](int key){
         QWebEngineView *view = lookupWebView(key);
         if (view) {
             view->back();
         }
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackUnderRequested, [this](int topKey, int underKey) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackUnderRequest, [this](int topKey, int underKey) {
 
         auto wTop = lookupWebView(topKey);
         auto wUnder = lookupWebView(underKey);
@@ -232,18 +236,18 @@ void MainWindow::createControlInterface()
             wTop->stackUnder(wUnder);
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackOnTopRequested, [this](int key) {
+    QObject::connect(&controlInterface, &ControlInterface::onWebViewStackOnTopRequest, [this](int key) {
 
         auto w = lookupWebView(key);
         if (w)
             w->raise();
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onKeyboardShowRequested, [this](void) {
+    QObject::connect(&controlInterface, &ControlInterface::onKeyboardShowRequest, [this](void) {
         onKeyboardActiveChanged(true);
     });
 
-    QObject::connect(&controlInterface, &ControlInterface::onKeyboardHideRequested, [this](void) {
+    QObject::connect(&controlInterface, &ControlInterface::onKeyboardHideRequest, [this](void) {
         onKeyboardActiveChanged(false);
     });
 

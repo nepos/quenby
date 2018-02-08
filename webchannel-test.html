@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Webchannel playground</title>
+    <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+  </head>
+  <body>
+    <button onclick="back()">Back</button>
+    <button onclick="forward()">Forward</button>
+    <button onclick="history()">History</button>
+    <button onclick="showKeyboard()">ShowKeyboard</button>
+    <button onclick="hideKeyboard()">HideKeyboard</button>
+
+
+    <p style="background-color:white" id="console"></p>
+    <p style="background-color:red" id="history1"></p>
+    <p style="background-color:red" id="history2"></p>
+    <script type="text/javascript">
+     new QWebChannel(window['qt'].webChannelTransport, channel => {
+
+       window.channelApi = channel.objects.main;
+
+       channelApi.createWebView(1, id => {
+         channelApi.setWebViewGeometry(1, 10, 160, 1260, 630, () => {
+           channelApi.setWebViewVisible(1, true, () => {
+             channelApi.setWebViewUrl(1, 'https://www.heise.de/');
+           });
+         });
+       });
+
+       channelApi.onCertificateInvalid.connect(() => {
+         console.log("onCertificateInvalid");
+       });
+
+       channelApi.onKeyboardShown.connect((height) => {
+         console.log(`onKeyboardShown, height=${height}`);
+       });
+
+       channelApi.onKeyboardHidden.connect(() => {
+         console.log("onKeyboardHidden");
+       });
+
+       channelApi.onWebViewURLChanged.connect((id, url) => {
+         document.getElementById('console').innerHTML = `view: ${id} | url: ${url}`;
+       });
+
+       channelApi.onWebViewBackwardHistoryRequested.connect((id, history) => {
+         document.getElementById('history1').innerHTML = `history: ${history}`;
+       });
+
+     });
+
+     function showKeyboard() {
+       channelApi.showKeyboard();
+     }
+
+     function hideKeyboard() {
+       channelApi.hideKeyboard();
+     }
+
+     function back() {
+       channelApi.setWebViewPrev(1);
+     }
+
+     function forward(){
+       channelApi.setWebViewNext(1);
+     }
+
+     function history() {
+       channelApi.getWebViewBackwardHistory(1);
+     }
+
+    </script>
+</body>
+</html>

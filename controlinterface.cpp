@@ -25,12 +25,12 @@ ControlInterface::ControlInterface(QObject *parent) : QObject(parent)
 
 int ControlInterface::createWebView()
 {
-    return emit onCreateWebViewRequested();
+    return emit onCreateWebViewRequest();
 }
 
 void ControlInterface::destroyWebView(int key)
 {
-    emit onDestroyWebViewRequested(key);
+    emit onDestroyWebViewRequest(key);
 }
 
 void ControlInterface::setWebViewUrl(int key, const QString &url)
@@ -40,55 +40,55 @@ void ControlInterface::setWebViewUrl(int key, const QString &url)
 
 void ControlInterface::setWebViewGeometry(int key, int x, int y, int w, int h)
 {
-    emit onWebViewGeometryChangeRequested(key, x, y, w, h);
+    emit onWebViewGeometryChangeRequest(key, x, y, w, h);
 }
 
 void ControlInterface::setWebViewVisible(int key, bool visible)
 {
-    emit onWebViewVisibleChangeRequested(key, visible);
+    emit onWebViewVisibleChangeRequest(key, visible);
 }
 
 void ControlInterface::setWebViewTransparentBackground(int key, bool transparent)
 {
-    emit onWebViewTransparentBackgroundChangeRequested(key, transparent);
+    emit onWebViewTransparentBackgroundChangeRequest(key, transparent);
 }
 
 void ControlInterface::setWebViewNext(int key)
 {
-    emit onWebViewNextRequested(key);
+    emit onWebViewNextRequest(key);
 }
 
 void ControlInterface::setWebViewPrev(int key)
 {
-    emit onWebViewPrevRequested(key);
+    emit onWebViewPrevRequest(key);
 }
 
 void ControlInterface::getWebViewForwardHistory(int key)
 {
-    emit onWebViewForwardHistoryRequestedL(key);
+    emit onWebViewForwardHistoryRequest(key);
 }
 
 void ControlInterface::getWebViewBackwardHistory(int key)
 {
-    emit onWebViewBackwardHistoryRequestedL(key);
+    emit onWebViewBackwardHistoryRequest(key);
 }
 
 void ControlInterface::setWebViewStackUnder(int topKey, int underKey)
 {
-    emit onWebViewStackUnderRequested(topKey, underKey);
+    emit onWebViewStackUnderRequest(topKey, underKey);
 }
 
 void ControlInterface::setWebViewStackOnTop(int key)
 {
-    emit onWebViewStackOnTopRequested(key);
+    emit onWebViewStackOnTopRequest(key);
 }
 
 void ControlInterface::showKeyboard(void)
 {
-    emit onKeyboardShowRequested();
+    emit onKeyboardShowRequest();
 }
 
 void ControlInterface::hideKeyboard(void)
 {
-    emit onKeyboardHideRequested();
+    emit onKeyboardHideRequest();
 }

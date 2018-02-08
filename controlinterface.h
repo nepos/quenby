@@ -50,24 +50,19 @@ public slots:
 
 signals:
     // App → Server
-    int onCreateWebViewRequested();
-    void onDestroyWebViewRequested(int key);
-    void onWebViewGeometryChangeRequested(int key, int x, int y, int w, int h);
-    void onWebViewVisibleChangeRequested(int key, bool value);
-    void onWebViewTransparentBackgroundChangeRequested(int key, bool value);
-    void onWebViewStackUnderRequested(int topKey, int underKey);
-    void onWebViewStackOnTopRequested(int key);
-    void onWebViewNextRequested(int key);
-    void onWebViewPrevRequested(int key);
-    void onWebViewForwardHistoryRequestedL(int key);
-    void onWebViewBackwardHistoryRequestedL(int key);
-    void onWebViewForwardHistoryRequested(int key, const QStringList);
-    void onWebViewBackwardHistoryRequested(int key, const QStringList);
-
-    void onCertificateInvalid(void);
-
-    void onKeyboardShowRequested(void);
-    void onKeyboardHideRequested(void);
+    int onCreateWebViewRequest();
+    void onDestroyWebViewRequest(int key);
+    void onWebViewGeometryChangeRequest(int key, int x, int y, int w, int h);
+    void onWebViewVisibleChangeRequest(int key, bool value);
+    void onWebViewTransparentBackgroundChangeRequest(int key, bool value);
+    void onWebViewStackUnderRequest(int topKey, int underKey);
+    void onWebViewStackOnTopRequest(int key);
+    void onWebViewNextRequest(int key);
+    void onWebViewPrevRequest(int key);
+    void onWebViewForwardHistoryRequest(int key);
+    void onWebViewBackwardHistoryRequest(int key);
+    void onKeyboardShowRequest(void);
+    void onKeyboardHideRequest(void);
 
     // App ←/→ Server
     void onWebViewURLChanged(int key, const QString &value);
@@ -75,6 +70,11 @@ signals:
     void onWebViewURLChangeRequested(int key, const QString &value);
 
     // Server → App
+    void onCertificateInvalid(void);
     void onWebViewTitleChanged(int key, const QString &value);
     void onWebViewLoadProgressChanged(int key, int value);
+    void onWebViewForwardHistoryRequested(int key, const QStringList);
+    void onWebViewBackwardHistoryRequested(int key, const QStringList);
+    void onKeyboardShown(int height);
+    void onKeyboardHidden(void);
 };
