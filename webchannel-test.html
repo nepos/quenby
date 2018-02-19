@@ -4,25 +4,69 @@
     <meta charset="UTF-8">
     <title>Webchannel playground</title>
     <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <style type="text/css">
+     #box {
+       margin-top: 5px;
+       border-bottom: 2px solid gray;
+       height: 118px;
+     }
+     #url {
+       background-color: gray;
+       border: 1px solid black;
+       color: white;
+       margin: 2px;
+       overflow: hidden;
+       white-space: nowrap;
+     }
+     #console {
+       color: red;
+       font-size: 75%;
+       overflow: auto;
+       max-height: 76px;
+     }
+     #console a {
+       color: black;
+     }
+    </style>
   </head>
-  <body>
-    <button onclick="back()">Back</button>
-    <button onclick="forward()">Forward</button>
+  <body style="background-color:#efefef;">
+    <span id="cert">&#128274;</span>
+    <button onclick="location.reload()">&#128472;</button>
+    <button onclick="channelApi.setWebViewUrl(1, 'http://www.google.de/')">	&#8962;</button>
+    <button onclick="back()">	&#9664;</button>
+    <button onclick="forward()">&#9654;</button>
     <button onclick="history()">History</button>
     <button onclick="showKeyboard()">ShowKeyboard</button>
     <button onclick="hideKeyboard()">HideKeyboard</button>
-
-
-    <p style="background-color:white" id="console"></p>
-    <p style="background-color:red" id="history1"></p>
-    <p style="background-color:red" id="history2"></p>
+    <div id="box">
+      <p id="url"></p>
+      <small>Log:</small>
+      <div id="console"></div>
+    </div>
     <script type="text/javascript">
+
+     let invalid = false;
+     let newInvlaid = false;
+
+     function log(message) {
+       const span = document.createElement('div');
+       const anchor = document.createElement('a');
+       anchor.innerHTML = '[x] | ';
+       anchor.addEventListener('click', () => {
+         span.parentNode.removeChild(span);
+       });
+       const msg = document.createTextNode(message);
+       span.appendChild(anchor);
+       span.appendChild(msg);
+       document.getElementById('console').appendChild(span);
+     }
+
      new QWebChannel(window['qt'].webChannelTransport, channel => {
 
        window.channelApi = channel.objects.main;
 
        channelApi.createWebView(1, id => {
-         channelApi.setWebViewGeometry(1, 10, 160, 1260, 630, () => {
+         channelApi.setWebViewGeometry(1, 0, 160,1280, 630, () => {
            channelApi.setWebViewVisible(1, true, () => {
              channelApi.setWebViewUrl(1, 'https://www.heise.de/');
            });
@@ -30,25 +74,35 @@
        });
 
        channelApi.onCertificateInvalid.connect(() => {
-         console.log("onCertificateInvalid");
+         log('onCertificateInvalid');
+         invalid = true;
        });
 
        channelApi.onKeyboardShown.connect((height) => {
-         console.log(`onKeyboardShown, height=${height}`);
+         log(`onKeyboardShown, height=${height}`);
        });
 
        channelApi.onKeyboardHidden.connect(() => {
-         console.log("onKeyboardHidden");
+         log('onKeyboardHidden');
        });
 
        channelApi.onWebViewURLChanged.connect((id, url) => {
-         document.getElementById('console').innerHTML = `view: ${id} | url: ${url}`;
+         document.getElementById('url').innerHTML = `&#127760; ${url}`;
+         if(invalid) {
+           document.getElementById('cert').style = 'color: red';
+         }
+         else {
+           document.getElementById('cert').style = 'color: green';
+         }
+         invalid = false;
        });
 
-       channelApi.onWebViewBackwardHistoryRequested.connect((id, history) => {
-         document.getElementById('history1').innerHTML = `history: ${history}`;
+       channelApi.onWebViewBackwardHistoryRequested.connect((id, url) => {
+         log(`Back Url: ${url}`);
        });
-
+       channelApi.onWebViewForwardHistoryRequested.connect((id, url) => {
+         log(`Forward Url: ${url}`);
+       });
      });
 
      function showKeyboard() {
@@ -61,10 +115,12 @@
 
      function back() {
        channelApi.setWebViewPrev(1);
+       channelApi.getWebViewForwardHistory(1);
      }
 
      function forward(){
        channelApi.setWebViewNext(1);
+       channelApi.getWebViewBackwardHistory(1);
      }
 
      function history() {
