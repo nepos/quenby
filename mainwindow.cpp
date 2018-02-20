@@ -74,14 +74,17 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
 
     createControlInterface();
 
-    QObject::connect(page, &WebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, WebEnginePage::Feature feature) {
-        enum WebEnginePage::PermissionPolicy verdict =
-                (securityOrigin.host() == "localhost") ?
-                            WebEnginePage::PermissionGrantedByUser :
-                            WebEnginePage::PermissionDeniedByUser;
+    QObject::connect(page, &WebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, QWebEnginePage::Feature feature) {
 
-                qInfo() << "WebEnginePage::featurePermissionRequested: " << feature << "verdict " << verdict;
-                page->setFeaturePermission(securityOrigin, feature, verdict);
+        enum QWebEnginePage::PermissionPolicy verdict = QWebEnginePage::PermissionDeniedByUser;
+
+        if (securityOrigin.host() == "localhost" ||
+                securityOrigin.host() == "localhost:3000" && (feature == QWebEnginePage::MediaAudioVideoCapture ||
+                                                              feature == QWebEnginePage::MediaVideoCapture))
+            verdict = QWebEnginePage::PermissionGrantedByUser;
+
+        qInfo() << "WebEnginePage::featurePermissionRequested: " << feature << "verdict " << verdict;
+        page->setFeaturePermission(securityOrigin, feature, verdict);
     });
 
     QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
