@@ -38,6 +38,8 @@
     <button onclick="history()">History</button>
     <button onclick="showKeyboard()">ShowKeyboard</button>
     <button onclick="hideKeyboard()">HideKeyboard</button>
+    <button onclick="enableKeyboard()">EnableKeyboard</button>
+    <button onclick="disableKeyboard()">DisableKeyboard</button>
     <div id="box">
       <p id="url"></p>
       <small>Log:</small>
@@ -125,6 +127,14 @@
 
      function history() {
        channelApi.getWebViewBackwardHistory(1);
+     }
+
+     function enableKeyboard() {
+	channelApi.setKeyboardEnabled(true)
+     }
+
+     function disableKeyboard() {
+	channelApi.setKeyboardEnabled(false)
      }
 
     </script>

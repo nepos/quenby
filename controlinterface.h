@@ -39,6 +39,7 @@ public slots:
     void setWebViewTransparentBackground(int key, bool transparent);
     void setWebViewNext(int key);
     void setWebViewPrev(int key);
+    void setKeyboardEnabled(bool enabled);
     void setWebViewStackUnder(int topKey, int underKey);
     void setWebViewStackOnTop(int key);
     void getWebViewForwardHistory(int key);
@@ -46,6 +47,7 @@ public slots:
 
     void showKeyboard(void);
     void hideKeyboard(void);
+
 
 
 signals:
@@ -77,4 +79,7 @@ signals:
     void onWebViewBackwardHistoryRequested(int key, const QStringList);
     void onKeyboardShown(int height);
     void onKeyboardHidden(void);
+
+    // Other
+    void onSetKeyboardEnabledRequested(bool enabled);
 };

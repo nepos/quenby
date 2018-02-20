@@ -32,6 +32,7 @@
 
 MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, QWidget *parent) :
     QMainWindow(parent),
+    keyboardEnabled(true),
     frame(new QWidget(this)),
     browserWidget(new QWidget(this)),
     windowLayout(new QVBoxLayout(this)),
@@ -98,6 +99,11 @@ MainWindow::~MainWindow()
         delete quickWidget;
 }
 
+void MainWindow::setKeyboardEnabled(bool enabled)
+{
+    keyboardEnabled = enabled;
+}
+
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
@@ -108,6 +114,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::onKeyboardActiveChanged(bool a)
 {
+    if (!keyboardEnabled)
+        return;
+
     quickWidget->setVisible(a);
     if (a)
         emit controlInterface.onKeyboardShown(quickWidget->size().height());
@@ -254,6 +263,13 @@ void MainWindow::createControlInterface()
         onKeyboardActiveChanged(false);
     });
 
+    QObject::connect(&controlInterface, &ControlInterface::onSetKeyboardEnabledRequested, [this](bool enabled){
+
+        if (!enabled)
+            quickWidget->setVisible(false);
+
+        this->keyboardEnabled = enabled;
+    });
 
     controlChannel.registerObject(QStringLiteral("main"), &controlInterface);
 }

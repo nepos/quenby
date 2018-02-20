@@ -92,3 +92,8 @@ void ControlInterface::hideKeyboard(void)
 {
     emit onKeyboardHideRequest();
 }
+
+void ControlInterface::setKeyboardEnabled(bool enabled)
+{
+    emit onSetKeyboardEnabledRequested(enabled);
+}

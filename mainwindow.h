@@ -39,6 +39,7 @@ public:
     explicit MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
+    void setKeyboardEnabled(bool enabled);
 
 protected:
     void resizeEvent(QResizeEvent* event);
@@ -49,6 +50,8 @@ private slots:
     void onKeyboardHeightChanged(int h);
 
 private:
+    bool keyboardEnabled;
+
     QWidget *frame;
     QWidget *browserWidget;
     QVBoxLayout *windowLayout;
