@@ -61,6 +61,7 @@
        span.appendChild(anchor);
        span.appendChild(msg);
        document.getElementById('console').appendChild(span);
+       document.getElementById('console').scrollTo(0, document.getElementById('console').scrollHeight);
      }
 
      new QWebChannel(window['qt'].webChannelTransport, channel => {
@@ -75,8 +76,8 @@
          });
        });
 
-       channelApi.onCertificateInvalid.connect(() => {
-         log('onCertificateInvalid');
+       channelApi.onCertificateInvalid.connect((id, url) => {
+         log(`onCertificateInvalid for id: ${id} url: ${url}`);
          invalid = true;
        });
 

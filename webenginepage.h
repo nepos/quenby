@@ -20,18 +20,25 @@
 #pragma once
 
 #include <QWebEnginePage>
+#include <QSet>
+#include <QUrl>
 
 class WebEnginePage : public QWebEnginePage
 {
     Q_OBJECT
 
 public:
-    explicit WebEnginePage(QObject *parent);
     WebEnginePage(QWebEngineProfile *profile, QObject *parent = Q_NULLPTR);
+    void prev(void);
+    void next(void);
+
+signals:
+    void onCertificateInvalid(const QUrl &url);
 
 protected:
     virtual bool certificateError(const QWebEngineCertificateError &certificateError);
 
-signals:
-    void onCertificateInvalid();
+private:
+    QSet<QUrl> m_urlWithCertError;
+
 };

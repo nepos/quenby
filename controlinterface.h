@@ -48,8 +48,6 @@ public slots:
     void showKeyboard(void);
     void hideKeyboard(void);
 
-
-
 signals:
     // App → Server
     int onCreateWebViewRequest();
@@ -72,7 +70,7 @@ signals:
     void onWebViewURLChangeRequested(int key, const QString &value);
 
     // Server → App
-    void onCertificateInvalid(void);
+    void onCertificateInvalid(int key, const QUrl &url);
     void onWebViewTitleChanged(int key, const QString &value);
     void onWebViewLoadProgressChanged(int key, int value);
     void onWebViewForwardHistoryRequested(int key, const QStringList);

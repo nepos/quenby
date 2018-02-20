@@ -81,11 +81,13 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
 
         if (securityOrigin.host() == "localhost" ||
                 (securityOrigin.host() == "localhost:3000" && (feature == QWebEnginePage::MediaAudioVideoCapture ||
-                                                              feature == QWebEnginePage::MediaVideoCapture)))
+                                                               feature == QWebEnginePage::MediaVideoCapture))) {
             verdict = QWebEnginePage::PermissionGrantedByUser;
+        }
 
-        qInfo() << "WebEnginePage::featurePermissionRequested: " << feature << "verdict " << verdict;
+        qInfo() << "WebEnginePage::featurePermissionRequested: " << feature << " verdict " << verdict;
         page->setFeaturePermission(securityOrigin, feature, verdict);
+
     });
 
     QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
@@ -136,6 +138,7 @@ void MainWindow::createControlInterface()
     QObject::connect(&controlInterface, &ControlInterface::onCreateWebViewRequest, [this]() {
         auto key = nextKey();
         QWebEngineView *view = addWebView(key);
+        WebEnginePage *page = static_cast<WebEnginePage*>(view->page());
 
         QObject::connect(view, &QWebEngineView::urlChanged, [this, key](const QUrl &url) {
             emit controlInterface.onWebViewURLChanged(key, url.url());
@@ -151,6 +154,10 @@ void MainWindow::createControlInterface()
 
         QObject::connect(view, &QWebEngineView::loadProgress, [this, key](int progress) {
             emit controlInterface.onWebViewLoadProgressChanged(key, progress);
+        });
+
+        QObject::connect(page, &WebEnginePage::onCertificateInvalid, [this, key](const QUrl &url) {
+            emit controlInterface.onCertificateInvalid(key, url);
         });
 
         return key;
@@ -183,7 +190,6 @@ void MainWindow::createControlInterface()
             emit controlInterface.onWebViewBackwardHistoryRequested(key, pages);
         }
     });
-
 
     QObject::connect(&controlInterface, &ControlInterface::onDestroyWebViewRequest, [this](int key) {
         QWebEngineView *view = lookupWebView(key);
@@ -228,16 +234,22 @@ void MainWindow::createControlInterface()
 
     QObject::connect(&controlInterface, &ControlInterface::onWebViewNextRequest, [this](int key){
         QWebEngineView *view = lookupWebView(key);
-        if (view) {
-            view->forward();
-        }
+        if (!view) return;
+
+        WebEnginePage *page = static_cast<WebEnginePage*>(view->page());
+        if (!page) return;
+
+        page->next();
     });
 
     QObject::connect(&controlInterface, &ControlInterface::onWebViewPrevRequest, [this](int key){
         QWebEngineView *view = lookupWebView(key);
-        if (view) {
-            view->back();
-        }
+        if (!view) return;
+
+        WebEnginePage *page = static_cast<WebEnginePage*>(view->page());
+        if (!page) return;
+
+        page->prev();
     });
 
     QObject::connect(&controlInterface, &ControlInterface::onWebViewStackUnderRequest, [this](int topKey, int underKey) {
@@ -292,8 +304,6 @@ QWebEngineView *MainWindow::addWebView(int key)
     view->setPage(page);
 
     views.insert(key, view);
-
-    connect(page, SIGNAL(onCertificateInvalid()), &controlInterface, SIGNAL(onCertificateInvalid()));
 
     return view;
 }
