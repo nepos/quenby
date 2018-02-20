@@ -79,8 +79,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
         enum QWebEnginePage::PermissionPolicy verdict = QWebEnginePage::PermissionDeniedByUser;
 
         if (securityOrigin.host() == "localhost" ||
-                securityOrigin.host() == "localhost:3000" && (feature == QWebEnginePage::MediaAudioVideoCapture ||
-                                                              feature == QWebEnginePage::MediaVideoCapture))
+                (securityOrigin.host() == "localhost:3000" && (feature == QWebEnginePage::MediaAudioVideoCapture ||
+                                                              feature == QWebEnginePage::MediaVideoCapture)))
             verdict = QWebEnginePage::PermissionGrantedByUser;
 
         qInfo() << "WebEnginePage::featurePermissionRequested: " << feature << "verdict " << verdict;
