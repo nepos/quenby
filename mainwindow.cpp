@@ -73,6 +73,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
 
     auto key = nextKey();
     auto *view = addWebView(key);
+    // Add default browser to layout, so it scales when keyboard is shown
+    browserLayout->addWidget(view);
     auto *page = view->page();
     page->setBackgroundColor(Qt::transparent);
     view->page()->setWebChannel(&controlChannel);
@@ -303,7 +305,6 @@ int MainWindow::nextKey()
 QWebEngineView *MainWindow::addWebView(int key)
 {
     QWebEngineView *view = new QWebEngineView(browserWidget);
-    browserLayout->addWidget(view);
     view->setAutoFillBackground(true);
     view->setContextMenuPolicy(Qt::NoContextMenu);
 
