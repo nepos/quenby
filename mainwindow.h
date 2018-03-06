@@ -55,6 +55,7 @@ private:
     QWidget *frame;
     QWidget *browserWidget;
     QVBoxLayout *windowLayout;
+    QVBoxLayout *browserLayout;
     QQuickWidget *quickWidget;
     QObject *inputPanel;
 

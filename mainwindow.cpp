@@ -34,9 +34,10 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     QMainWindow(parent),
     keyboardEnabled(true),
     frame(new QWidget(this)),
-    browserWidget(new QWidget(this)),
+    browserWidget(new QWidget(frame)),
     windowLayout(new QVBoxLayout(this)),
-    quickWidget(new QQuickWidget(this)),
+    browserLayout(new QVBoxLayout(this)),
+    quickWidget(new QQuickWidget(frame)),
     inputPanel(nullptr),
     controlChannel(),
     controlInterface(),
@@ -46,6 +47,9 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     frame->setLayout(windowLayout);
 
     setAttribute(Qt::WA_TranslucentBackground);
+
+    browserWidget->setLayout(browserLayout);
+    browserWidget->resize(mainViewWidth, mainViewHeight);
 
     quickWidget->setFocusPolicy(Qt::NoFocus);
     quickWidget->setSource(QUrl("qrc:/inputpanel.qml"));
@@ -57,9 +61,12 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     windowLayout->setSpacing(0);
     windowLayout->setMargin(0);
 
+    browserLayout->setSpacing(0);
+    browserLayout->setMargin(0);
+
     inputPanel = quickWidget->rootObject();
     if (inputPanel)
-        inputPanel->setProperty("width", size().width());
+        inputPanel->setProperty("width", mainViewWidth);
 
     connect(inputPanel, SIGNAL(activated(bool)), this, SLOT(onKeyboardActiveChanged(bool)));
     connect(inputPanel, SIGNAL(heightChanged(int)), this, SLOT(onKeyboardHeightChanged(int)));
@@ -296,6 +303,7 @@ int MainWindow::nextKey()
 QWebEngineView *MainWindow::addWebView(int key)
 {
     QWebEngineView *view = new QWebEngineView(browserWidget);
+    browserLayout->addWidget(view);
     view->setAutoFillBackground(true);
     view->setContextMenuPolicy(Qt::NoContextMenu);
 
