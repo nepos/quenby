@@ -37,13 +37,13 @@ int main(int argc, char *argv[])
     QCommandLineOption widthOption(QStringList() <<
                                    "w" << "width",
                                    "Main web view width [default: 1280].",
-                                   QStringLiteral("width"), QStringLiteral("1280"));
+                                   "width", "1280");
     parser.addOption(widthOption);
 
     QCommandLineOption heightOption(QStringList() <<
                                     "i" << "height",
                                     "Main web view height [default: 800].",
-                                    QStringLiteral("height"), QStringLiteral("800"));
+                                    "height", "800");
     parser.addOption(heightOption);
 
     QCommandLineOption fullscreenOption(QStringList() <<
@@ -54,27 +54,30 @@ int main(int argc, char *argv[])
     QCommandLineOption defaultViewUrlOption(QStringList() <<
                                             "u" << "url",
                                             "Default view URL [default: http://localhost:3000/dist].",
-                                            QStringLiteral("url"), QStringLiteral("http://localhost:3000/dist"));
+                                            "url", "http://localhost:3000/dist");
     parser.addOption(defaultViewUrlOption);
 
     // These options are read by the Qt/Chromium glue layer by parsing the command line of the current process.
     // quenby silently accepts them if passed, but doesn't actually do anything with it.
-    QCommandLineOption enableLoggingOption(QStringList() <<
-                                           "x" << "enable-logging",
-                                           "Enable Chromium debug logging",
-                                           QStringLiteral("enable-logging"));
-    parser.addOption(enableLoggingOption);
+    QCommandLineOption chromeLoggingOption("enable-logging", "", "enable-logging", "");
+    parser.addOption(chromeLoggingOption);
 
-    QCommandLineOption logLevelOption(QStringList() <<
-                                      "y" << "log-level",
-                                      "Set Chromium log level",
-                                      QStringLiteral("log-level"));
-    parser.addOption(logLevelOption);
+    QCommandLineOption chromeLogLevelOption("log-level", "", "log-level", "0");
+    parser.addOption(chromeLogLevelOption);
+
+    QCommandLineOption chromeGPURasterizationOption("enable-gpu-rasterization");
+    parser.addOption(chromeGPURasterizationOption);
+
+    QCommandLineOption chromeGPUBuffersOption("enable-native-gpu-memory-buffers");
+    parser.addOption(chromeGPUBuffersOption);
+
+    QCommandLineOption numRasterThreadsOption("num-raster-threads", "", "num-raster-threads", "1");
+    parser.addOption(numRasterThreadsOption);
 
     QCommandLineOption debugPortOption(QStringList() <<
                                        "p" << "remote-debug-port",
                                        "WebEngine debug port [default: 3002].",
-                                       QStringLiteral("remote-debug-port"), QStringLiteral("3002"));
+                                       "remote-debug-port", "3002");
     parser.addOption(debugPortOption);
 
     parser.process(app);
