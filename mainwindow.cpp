@@ -251,17 +251,20 @@ void MainWindow::createControlInterface()
         if (!view) return;
 
         WebEnginePage *page = static_cast<WebEnginePage*>(view->page());
-        if (!page) return;
+        if (!page)
+            return;
 
         page->next();
     });
 
     QObject::connect(&controlInterface, &ControlInterface::onWebViewPrevRequest, [this](int key){
         QWebEngineView *view = lookupWebView(key);
-        if (!view) return;
+        if (!view)
+            return;
 
         WebEnginePage *page = static_cast<WebEnginePage*>(view->page());
-        if (!page) return;
+        if (!page)
+            return;
 
         page->prev();
     });

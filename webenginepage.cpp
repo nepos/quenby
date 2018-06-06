@@ -4,7 +4,8 @@
 
 WebEnginePage::WebEnginePage(QWebEngineProfile *profile, QObject *parent) :
     QWebEnginePage(profile, parent)
-{}
+{
+}
 
 bool WebEnginePage::certificateError(const QWebEngineCertificateError &certificateError)
 {
