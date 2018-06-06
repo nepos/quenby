@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QTemporaryFile>
 #include <QTimer>
+#include <QWebEngineProfile>
 
 #include "mainwindow.h"
 #include "webenginepage.h"
@@ -47,6 +48,10 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     frame->setLayout(windowLayout);
 
     setAttribute(Qt::WA_TranslucentBackground);
+
+    QWebEngineProfile *profile = QWebEngineProfile::defaultProfile();
+    profile->clearHttpCache();
+    profile->setHttpCacheType(QWebEngineProfile::DiskHttpCache);
 
     browserWidget->setLayout(browserLayout);
     browserWidget->resize(mainViewWidth, mainViewHeight);
