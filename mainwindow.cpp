@@ -134,10 +134,13 @@ void MainWindow::onKeyboardActiveChanged(bool a)
         return;
 
     quickWidget->setVisible(a);
-    if (a)
+    if (a) {
         emit controlInterface.onKeyboardShown(quickWidget->size().height());
-    else
+        quickWidget->grabMouse();
+    } else {
         emit controlInterface.onKeyboardHidden();
+        quickWidget->releaseMouse();
+    }
 }
 
 void MainWindow::onKeyboardHeightChanged(int h)
