@@ -74,6 +74,9 @@ int main(int argc, char *argv[])
     QCommandLineOption numRasterThreadsOption("num-raster-threads", "", "num-raster-threads", "1");
     parser.addOption(numRasterThreadsOption);
 
+    QCommandLineOption chromeDisableGpuOption("disable-gpu");
+    parser.addOption(chromeDisableGpuOption);
+
     QCommandLineOption debugPortOption(QStringList() <<
                                        "p" << "remote-debug-port",
                                        "WebEngine debug port [default: 3002].",
