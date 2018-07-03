@@ -23,8 +23,12 @@
 
 #include "mainwindow.h"
 
+#include <mcheck.h>
+
 int main(int argc, char *argv[])
 {
+    mtrace();
+
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
     qputenv("QT_VIRTUALKEYBOARD_STYLE", QByteArray("nepos"));
 
