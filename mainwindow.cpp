@@ -90,18 +90,16 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     createControlInterface();
 
     QObject::connect(page, &WebEnginePage::featurePermissionRequested, [this, page](const QUrl &securityOrigin, QWebEnginePage::Feature feature) {
-
         enum QWebEnginePage::PermissionPolicy verdict = QWebEnginePage::PermissionDeniedByUser;
 
-        if (securityOrigin.host() == "localhost" ||
-                (securityOrigin.host() == "localhost:3000" && (feature == QWebEnginePage::MediaAudioVideoCapture ||
-                                                               feature == QWebEnginePage::MediaVideoCapture))) {
+        if (securityOrigin.isLocalFile())
             verdict = QWebEnginePage::PermissionGrantedByUser;
-        }
 
-        qInfo() << "WebEnginePage::featurePermissionRequested: " << feature << " verdict " << verdict;
+        if (securityOrigin.host() == "localhost" && securityOrigin.port() == 3000)
+            verdict = QWebEnginePage::PermissionGrantedByUser;
+
+        qInfo() << "WebEnginePage::featurePermissionRequested:" << feature << "verdict" << verdict;
         page->setFeaturePermission(securityOrigin, feature, verdict);
-
     });
 
     QObject::connect(view, &QWebEngineView::titleChanged, [this](const QString &title) {
