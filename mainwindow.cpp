@@ -30,6 +30,7 @@
 
 #include "mainwindow.h"
 #include "webenginepage.h"
+#include "keyboardwidget.h"
 
 MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, QWidget *parent) :
     QMainWindow(parent),
@@ -38,7 +39,7 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     browserWidget(new QWidget(frame)),
     windowLayout(new QVBoxLayout(this)),
     browserLayout(new QVBoxLayout(this)),
-    quickWidget(new QQuickWidget(frame)),
+    keyboardWidget(new KeyboardWidget(frame)),
     inputPanel(nullptr),
     controlChannel(),
     controlInterface(),
@@ -56,20 +57,20 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
     browserWidget->setLayout(browserLayout);
     browserWidget->resize(mainViewWidth, mainViewHeight);
 
-    quickWidget->setFocusPolicy(Qt::NoFocus);
-    quickWidget->setSource(QUrl("qrc:/inputpanel.qml"));
-    quickWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    quickWidget->setVisible(false);
+    keyboardWidget->setFocusPolicy(Qt::NoFocus);
+    keyboardWidget->setSource(QUrl("qrc:/inputpanel.qml"));
+    keyboardWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    keyboardWidget->setVisible(false);
 
     windowLayout->addWidget(browserWidget);
-    windowLayout->addWidget(quickWidget);
+    windowLayout->addWidget(keyboardWidget);
     windowLayout->setSpacing(0);
     windowLayout->setMargin(0);
 
     browserLayout->setSpacing(0);
     browserLayout->setMargin(0);
 
-    inputPanel = quickWidget->rootObject();
+    inputPanel = keyboardWidget->rootObject();
     if (inputPanel)
         inputPanel->setProperty("width", mainViewWidth);
 
@@ -109,8 +110,8 @@ MainWindow::MainWindow(QUrl mainViewUrl, int mainViewWidth, int mainViewHeight, 
 
 MainWindow::~MainWindow()
 {
-    if (quickWidget)
-        delete quickWidget;
+    if (keyboardWidget)
+        delete keyboardWidget;
 }
 
 void MainWindow::setKeyboardEnabled(bool enabled)
@@ -131,18 +132,18 @@ void MainWindow::onKeyboardActiveChanged(bool a)
     if (!keyboardEnabled)
         return;
 
-    quickWidget->setVisible(a);
+    keyboardWidget->setVisible(a);
     if (a)
-        emit controlInterface.onKeyboardShown(quickWidget->size().height());
+        emit controlInterface.onKeyboardShown(keyboardWidget->size().height());
     else
         emit controlInterface.onKeyboardHidden();
 }
 
 void MainWindow::onKeyboardHeightChanged(int h)
 {
-    auto newSize = quickWidget->size();
+    auto newSize = keyboardWidget->size();
     newSize.setHeight(h);
-    quickWidget->resize(newSize);
+    keyboardWidget->resize(newSize);
 }
 
 void MainWindow::createControlInterface()
@@ -293,7 +294,7 @@ void MainWindow::createControlInterface()
     QObject::connect(&controlInterface, &ControlInterface::onSetKeyboardEnabledRequested, [this](bool enabled){
 
         if (!enabled)
-            quickWidget->setVisible(false);
+            keyboardWidget->setVisible(false);
 
         this->keyboardEnabled = enabled;
     });

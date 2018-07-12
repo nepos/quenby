@@ -56,7 +56,7 @@ private:
     QWidget *browserWidget;
     QVBoxLayout *windowLayout;
     QVBoxLayout *browserLayout;
-    QQuickWidget *quickWidget;
+    QQuickWidget *keyboardWidget;
     QObject *inputPanel;
 
     void createControlInterface();

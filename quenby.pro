@@ -17,12 +17,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     controlinterface.cpp \
-    webenginepage.cpp
+    webenginepage.cpp \
+    keyboardwidget.cpp
 
 HEADERS  += \
     mainwindow.h \
     controlinterface.h \
-    webenginepage.h
+    webenginepage.h \
+    keyboardwidget.h
 
 FORMS    +=
 
