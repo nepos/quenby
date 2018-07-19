@@ -6,6 +6,7 @@ KeyboardWidget::KeyboardWidget(QWidget *parent = nullptr) : QQuickWidget(parent)
 
 void KeyboardWidget::mousePressEvent(QMouseEvent *event)
 {
+#if QT_VERSION > 0x050903
     if (QSysInfo::currentCpuArchitecture() == "arm64") {
         //
         // There is a bug in qdeclarative that causes mouse events to be ignored
@@ -25,7 +26,9 @@ void KeyboardWidget::mousePressEvent(QMouseEvent *event)
         QQuickWidget::mousePressEvent(&fakePress);
         QQuickWidget::mousePressEvent(event);
         QQuickWidget::mousePressEvent(&fakeRelease);
-    } else {
+    } else
+#endif
+    {
         QQuickWidget::mousePressEvent(event);
     }
 }
